@@ -1,0 +1,2721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="artifact-type" content="narrative">
+  <meta name="design-style" content="briefing">
+  <title>Data Science Master Compendium — Units I–VI Study Guide &amp; Numerical Solutions</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.18.2/dist/katex.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.18.2/dist/katex.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.18.2/dist/contrib/auto-render.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js"></script>
+  <script src="https://unpkg.com/lucide@1.43.0/dist/umd/lucide.min.js"></script>
+
+  <style>
+    :root {
+      color-scheme: light;
+
+      /* Page and surfaces: warm stone-white paper */
+      --background: #faf9f5;
+      --surface-container-low: #ffffff;
+      --surface-container: #f1efe8;
+      --surface-container-high: #e6e2d6;
+
+      /* Ink */
+      --on-surface: #17181a;
+      --on-surface-variant: #56585c;
+
+      /* Rules */
+      --outline: #17181a;
+      --outline-variant: #dedad0;
+
+      /* Accents */
+      --primary: #17181a;
+      --on-primary: #faf9f5;
+      --primary-container: #f2b705;
+      --on-primary-container: #17181a;
+      --secondary: #1f4e5f;
+      --tertiary: #785008;
+      --error: #b42318;
+      --on-error: #ffffff;
+
+      /* Supporting tag and state surfaces */
+      --tag-bg: #f5e6c4;
+      --positive: #2b6e52;
+      --positive-bg: #e7f3ed;
+      --warning: #92400e;
+      --warning-bg: #fef3c7;
+      --error-bg: #fee4e2;
+      --secondary-soft: #e6eff2;
+      --focus: #1f4e5f;
+      --code-bg: #1c1f24;
+      --code-fg: #f3f1eb;
+      --code-muted: #9aa3af;
+
+      /* Data series */
+      --data-1: #1f4e5f;
+      --data-2: #d99000;
+      --data-3: #2b6e52;
+      --data-4: #b84a39;
+      --data-context: #c4bfb2;
+
+      /* Fonts */
+      --font-headline: 'Source Serif 4', serif;
+      --font-body: 'Plus Jakarta Sans', sans-serif;
+      --font-label: 'Geist Mono', monospace;
+
+      /* Shape */
+      --rounded: 0.25rem;
+      --rounded-lg: 0.375rem;
+      --rounded-full: 0.25rem;
+
+      /* Style effects */
+      --section-rule: 1.5px solid var(--outline);
+      --card-border: 1px solid var(--outline-variant);
+      --badge-radius: 2px;
+      --heading-tracking: -0.02em;
+      --label-tracking: 0.08em;
+
+      /* Type scale (Narrative) */
+      --display-size: clamp(2.25rem, 1.4rem + 3.2vw, 3.75rem);
+      --headline-size: clamp(1.65rem, 1.2rem + 1.8vw, 2.35rem);
+      --subhead-size: clamp(1.2rem, 1.05rem + 0.55vw, 1.45rem);
+      --body-size: clamp(1rem, 0.96rem + 0.2vw, 1.0625rem);
+      --label-size: clamp(0.75rem, 0.72rem + 0.12vw, 0.8125rem);
+
+      /* Spacing scale (4pt base) */
+      --space-xs: 0.25rem;
+      --space-sm: 0.5rem;
+      --space-md: 1rem;
+      --space-lg: 1.5rem;
+      --space-xl: 2.5rem;
+      --space-2xl: 4rem;
+      --space-3xl: 6rem;
+
+      /* Motion */
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+      --dur-micro: 120ms;
+      --dur-short: 220ms;
+      --dur-long: 420ms;
+    }
+
+    /* Base reset */
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body {
+      overflow-x: clip;
+      margin: 0;
+      padding: 0;
+      background: var(--background);
+      color: var(--on-surface);
+      font-family: var(--font-body);
+      font-size: var(--body-size);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      scroll-behavior: smooth;
+    }
+    header { position: static !important; }
+
+    /* Focus rings */
+    :focus-visible {
+      outline: 2px solid var(--focus);
+      outline-offset: 2px;
+    }
+
+    /* Layout shell */
+    .dossier-shell {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: var(--space-lg) var(--space-lg) var(--space-3xl);
+    }
+
+    .layout-split {
+      display: grid;
+      grid-template-columns: minmax(0, 260px) minmax(0, 1fr);
+      gap: var(--space-xl);
+      align-items: start;
+      margin-top: var(--space-xl);
+    }
+    .layout-split * { min-width: 0; }
+
+    /* Masthead */
+    .masthead {
+      padding-bottom: var(--space-xl);
+      border-bottom: var(--section-rule);
+    }
+    .dossier-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-sm);
+      border-bottom: var(--section-rule);
+      padding-bottom: var(--space-sm);
+      margin-bottom: var(--space-md);
+    }
+    .dossier-bar-left {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+    .dossier-pill {
+      background: var(--primary-container);
+      color: var(--on-primary-container);
+      font-family: var(--font-body);
+      font-weight: 700;
+      font-size: var(--label-size);
+      letter-spacing: var(--label-tracking);
+      text-transform: uppercase;
+      padding: var(--space-xs) var(--space-sm);
+      border-radius: var(--badge-radius);
+      display: inline-block;
+    }
+    .dossier-meta {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      color: var(--on-surface-variant);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .display-title {
+      font-family: var(--font-headline);
+      font-size: var(--display-size);
+      font-weight: 600;
+      letter-spacing: var(--heading-tracking);
+      line-height: 1.08;
+      margin: 0 0 var(--space-sm);
+      color: var(--on-surface);
+    }
+    .standfirst {
+      font-family: var(--font-body);
+      font-size: clamp(1.0625rem, 1rem + 0.35vw, 1.25rem);
+      font-weight: 600;
+      color: var(--secondary);
+      max-width: 68ch;
+      margin: 0 0 var(--space-lg);
+      line-height: 1.45;
+    }
+
+    /* Executive Overview Strip */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr));
+      gap: var(--space-md);
+    }
+    .figure-card {
+      background: var(--surface-container-low);
+      border: var(--card-border);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-md) var(--space-lg);
+    }
+    .figure-card .label {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--on-surface-variant);
+      display: block;
+      margin-bottom: var(--space-xs);
+    }
+    .figure-card .value {
+      font-family: var(--font-headline);
+      font-weight: 600;
+      font-size: clamp(1.5rem, 1.2rem + 1vw, 2rem);
+      font-variant-numeric: lining-nums tabular-nums;
+      color: var(--on-surface);
+      line-height: 1.15;
+    }
+    .figure-card .sub {
+      font-size: 0.875rem;
+      color: var(--on-surface-variant);
+      margin-top: var(--space-xs);
+    }
+
+    /* Sidebar TOC & Study Controls */
+    .sidebar-toc {
+      position: sticky;
+      top: var(--space-lg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+    }
+    .aside-box {
+      background: var(--surface-container);
+      border-top: var(--section-rule);
+      padding: var(--space-md);
+      border-radius: 0 0 var(--rounded-lg) var(--rounded-lg);
+    }
+    .aside-heading {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: var(--label-tracking);
+      color: var(--on-surface);
+      margin: 0 0 var(--space-sm);
+    }
+    .toc-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+    }
+    .toc-link {
+      display: flex;
+      align-items: baseline;
+      gap: var(--space-sm);
+      padding: var(--space-xs) var(--space-sm);
+      border-radius: var(--rounded);
+      text-decoration: none;
+      color: var(--on-surface);
+      font-size: 0.9rem;
+      font-weight: 500;
+      min-height: 44px;
+      align-items: center;
+      transition: background-color var(--dur-micro) var(--ease-out);
+    }
+    .toc-link:hover, .toc-link.active {
+      background: var(--surface-container-high);
+      color: var(--secondary);
+      font-weight: 600;
+    }
+    .index-num {
+      font-family: var(--font-label);
+      font-weight: 600;
+      font-size: var(--label-size);
+      color: var(--secondary);
+      flex-shrink: 0;
+    }
+
+    /* Mobile quick-nav (shown on narrow screens) */
+    .mobile-nav {
+      display: none;
+      gap: var(--space-sm);
+      overflow-x: auto;
+      padding: var(--space-sm) 0;
+      margin-top: var(--space-md);
+      border-bottom: var(--card-border);
+    }
+    .mobile-nav a {
+      flex-shrink: 0;
+      padding: var(--space-sm) var(--space-md);
+      background: var(--surface-container-low);
+      border: var(--card-border);
+      border-radius: var(--rounded);
+      text-decoration: none;
+      color: var(--on-surface);
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 600;
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    /* Main narrative column */
+    .main-column {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2xl);
+    }
+
+    .unit-section {
+      scroll-margin-top: var(--space-lg);
+    }
+    .section-title {
+      font-family: var(--font-headline);
+      font-size: var(--headline-size);
+      font-weight: 600;
+      letter-spacing: var(--heading-tracking);
+      line-height: 1.12;
+      margin: 0 0 var(--space-xs);
+    }
+    .section-deck {
+      font-weight: 600;
+      color: var(--secondary);
+      margin: 0 0 var(--space-lg);
+      max-width: 65ch;
+    }
+
+    /* 5-Mark Answer Card */
+    .answer-card {
+      background: var(--surface-container-low);
+      border: var(--card-border);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-lg);
+      margin-bottom: var(--space-lg);
+    }
+    .answer-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: var(--space-sm);
+      border-bottom: 1px solid var(--outline-variant);
+      padding-bottom: var(--space-sm);
+      margin-bottom: var(--space-md);
+    }
+    .answer-title {
+      font-family: var(--font-headline);
+      font-size: var(--subhead-size);
+      font-weight: 600;
+      margin: 0;
+      color: var(--on-surface);
+    }
+    .mark-badge {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 600;
+      background: var(--tag-bg);
+      color: var(--tertiary);
+      padding: var(--space-xs) var(--space-sm);
+      border-radius: var(--rounded);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* 5-Mark Framework Pillars */
+    .framework-grid {
+      display: grid;
+      gap: var(--space-md);
+    }
+    .pillar {
+      padding-left: var(--space-md);
+      border-left: 3px solid var(--secondary);
+    }
+    .pillar-label {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--secondary);
+      margin-bottom: var(--space-xs);
+      display: block;
+    }
+    .pillar p, .pillar ul {
+      margin: 0 0 var(--space-sm);
+      max-width: 68ch;
+    }
+    .pillar ul {
+      padding-left: var(--space-lg);
+    }
+    .pillar li {
+      margin-bottom: var(--space-xs);
+    }
+    .kw {
+      font-weight: 700;
+      color: var(--on-surface);
+      background: transparent;
+      transition: background-color var(--dur-micro) var(--ease-out);
+    }
+    body.highlight-keywords .kw {
+      background: var(--tag-bg);
+      padding: 0 0.2em;
+      border-radius: 2px;
+    }
+
+    /* Buttons */
+    .btn {
+      font-family: var(--font-body);
+      font-weight: 600;
+      font-size: 0.9rem;
+      border-radius: var(--rounded);
+      padding: var(--space-sm) var(--space-md);
+      min-height: 44px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-sm);
+      border: 1px solid var(--primary);
+      transition: background-color var(--dur-micro) var(--ease-out), color var(--dur-micro) var(--ease-out);
+    }
+    .btn-primary {
+      background: var(--primary);
+      color: var(--on-primary);
+    }
+    .btn-primary:hover {
+      background: var(--secondary);
+      border-color: var(--secondary);
+    }
+    .btn-secondary {
+      background: var(--surface-container-low);
+      color: var(--on-surface);
+      border-color: var(--outline-variant);
+    }
+    .btn-secondary:hover {
+      background: var(--surface-container-high);
+    }
+    .btn-secondary.is-active {
+      background: var(--secondary);
+      color: var(--on-primary);
+      border-color: var(--secondary);
+    }
+    .btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+      align-items: center;
+    }
+
+    /* Form Controls */
+    .control-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-md);
+      align-items: end;
+      margin-bottom: var(--space-md);
+    }
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+      flex: 1 1 180px;
+    }
+    .field-label {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--on-surface-variant);
+    }
+    .field-input, .field-select {
+      font-family: var(--font-label);
+      font-size: 0.9375rem;
+      padding: var(--space-sm) var(--space-md);
+      min-height: 44px;
+      border: 1px solid var(--outline-variant);
+      border-radius: var(--rounded);
+      background: var(--surface-container-low);
+      color: var(--on-surface);
+    }
+    .field-select {
+      padding-right: var(--space-xl);
+    }
+    .field-error {
+      font-size: 0.85rem;
+      color: var(--error);
+      font-weight: 600;
+      margin-top: var(--space-xs);
+    }
+
+    /* Tables */
+    .table-wrap {
+      overflow-x: auto;
+      margin: var(--space-md) 0;
+      border: var(--card-border);
+      border-radius: var(--rounded-lg);
+      background: var(--surface-container-low);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9375rem;
+    }
+    th {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      text-align: left;
+      padding: var(--space-sm) var(--space-md);
+      background: var(--surface-container);
+      border-bottom: var(--section-rule);
+      color: var(--on-surface);
+    }
+    td {
+      padding: var(--space-sm) var(--space-md);
+      border-bottom: 1px solid var(--outline-variant);
+      vertical-align: top;
+    }
+    tr:last-child td { border-bottom: none; }
+    .num {
+      font-family: var(--font-label);
+      font-variant-numeric: tabular-nums;
+      text-align: right;
+    }
+
+    /* Status Badges */
+    .status-tag {
+      display: inline-block;
+      font-family: var(--font-label);
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 0.15rem 0.45rem;
+      border-radius: var(--rounded);
+    }
+    .status-pass { background: var(--positive-bg); color: var(--positive); }
+    .status-fail { background: var(--error-bg); color: var(--error); }
+    .status-warn { background: var(--warning-bg); color: var(--warning); }
+    .status-info { background: var(--secondary-soft); color: var(--secondary); }
+
+    /* Interactive Lab Panel */
+    .lab-panel {
+      background: var(--surface-container);
+      border: var(--card-border);
+      border-top: 3px solid var(--secondary);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-lg);
+      margin: var(--space-lg) 0;
+    }
+    .lab-header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space-sm);
+      margin-bottom: var(--space-md);
+    }
+    .lab-title {
+      font-family: var(--font-headline);
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin: 0;
+    }
+    .lab-output {
+      background: var(--surface-container-low);
+      border: var(--card-border);
+      border-radius: var(--rounded);
+      padding: var(--space-md);
+      margin-top: var(--space-md);
+    }
+
+    /* Diagram SVG Container */
+    .diagram-box {
+      background: var(--surface-container-low);
+      border: var(--card-border);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-md);
+      margin: var(--space-md) 0;
+    }
+    .diagram-caption {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      color: var(--on-surface-variant);
+      margin-top: var(--space-sm);
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+    }
+    .svg-node {
+      cursor: pointer;
+      transition: opacity var(--dur-micro) var(--ease-out);
+    }
+    .svg-node:hover rect, .svg-node:hover circle {
+      stroke-width: 2.5px;
+    }
+    .svg-node.selected rect, .svg-node.selected circle {
+      fill: var(--primary-container);
+      stroke: var(--primary);
+      stroke-width: 2.5px;
+    }
+    .svg-node.selected text {
+      fill: var(--on-primary-container);
+    }
+
+    /* Math block */
+    .math-block {
+      background: var(--surface-container);
+      border-left: 3px solid var(--tertiary);
+      padding: var(--space-sm) var(--space-md);
+      margin: var(--space-sm) 0;
+      border-radius: 0 var(--rounded) var(--rounded) 0;
+      overflow-x: auto;
+    }
+
+    /* Code demonstration block */
+    .code-details {
+      margin-top: var(--space-md);
+      border: var(--card-border);
+      border-radius: var(--rounded-lg);
+      background: var(--surface-container-low);
+    }
+    .code-details summary {
+      padding: var(--space-sm) var(--space-md);
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      color: var(--secondary);
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .code-block-wrap {
+      position: relative;
+      background: var(--code-bg);
+      color: var(--code-fg);
+      padding: var(--space-md);
+      border-radius: 0 0 var(--rounded-lg) var(--rounded-lg);
+      overflow-x: auto;
+    }
+    .code-block-wrap pre {
+      margin: 0;
+      font-family: var(--font-label);
+      font-size: 0.85rem;
+      line-height: 1.55;
+    }
+
+    /* Chart container */
+    .chart-stage {
+      position: relative;
+      min-height: 360px;
+      background: var(--surface-container-low);
+      border: var(--card-border);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-md);
+    }
+
+    /* Two-column adaptive cards inside sections */
+    .two-col {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
+      gap: var(--space-md);
+    }
+
+    /* Step-by-step solved numerical box */
+    .worked-step {
+      border-top: 1px solid var(--outline-variant);
+      padding: var(--space-md) 0;
+    }
+    .worked-step:first-child { border-top: none; padding-top: 0; }
+    .step-heading {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--secondary);
+      margin: 0 0 var(--space-xs);
+    }
+
+    @media (max-width: 900px) {
+      .layout-split { grid-template-columns: 1fr; }
+      .sidebar-toc { display: none; }
+      .mobile-nav { display: flex; }
+    }
+    @media (max-width: 640px) {
+      .dossier-shell { padding: var(--space-md); }
+      .answer-card, .lab-panel { padding: var(--space-md); }
+      .control-row { align-items: stretch; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+<body class="highlight-keywords">
+  <div class="dossier-shell">
+    <!-- MASTHEAD -->
+    <header class="masthead">
+      <div class="dossier-bar">
+        <div class="dossier-bar-left">
+          <span class="dossier-pill">Master Study Dossier</span>
+          <span class="dossier-meta">Data Science (Theory) · Units I–VI · 42 Lecture Hours</span>
+        </div>
+        <div class="btn-row">
+          <button type="button" class="btn btn-secondary is-active" id="toggle-kw-btn" onclick="toggleKeywordHighlight()">
+            Keyword Highlights: On
+          </button>
+        </div>
+      </div>
+
+      <h1 class="display-title">Data Science Master Answers &amp; Numerical Solutions</h1>
+      <p class="standfirst">
+        A complete 5-mark examination framework covering theoretical foundations, architecture schematics, comparison matrices, Python demonstrations, and step-by-step mathematical labs from Data Preprocessing through Association Rule Mining.
+      </p>
+
+      <div class="kpi-grid">
+        <div class="figure-card">
+          <span class="label">Syllabus Scope</span>
+          <div class="value">6 Units</div>
+          <div class="sub">Intro, Warehouse, ML, Clustering, Rules, Viz</div>
+        </div>
+        <div class="figure-card">
+          <span class="label">Numerical Labs</span>
+          <div class="value">7 Solved</div>
+          <div class="sub">Min-Max, Binning, Entropy, Bayes, Apriori, ECLAT, FP-Tree</div>
+        </div>
+        <div class="figure-card">
+          <span class="label">Answer Format</span>
+          <div class="value">5-Mark</div>
+          <div class="sub">Definition · Mechanics · Visual · Case Study</div>
+        </div>
+        <div class="figure-card">
+          <span class="label">Visual Reference</span>
+          <div class="value">12 Charts</div>
+          <div class="sub">Full Unit VI taxonomy &amp; interactive selector</div>
+        </div>
+      </div>
+
+      <!-- Mobile Quick Jump -->
+      <nav class="mobile-nav" aria-label="Unit Jump Navigation">
+        <a href="#unit-1">01 Intro</a>
+        <a href="#unit-2">02 Warehouse &amp; Prep</a>
+        <a href="#unit-3">03 Classification</a>
+        <a href="#unit-4">04 Clustering</a>
+        <a href="#unit-5">05 Association Rules</a>
+        <a href="#unit-6">06 Visualization</a>
+      </nav>
+    </header>
+
+    <div class="layout-split">
+      <!-- STICKY SIDEBAR TOC -->
+      <aside class="sidebar-toc" aria-label="Study Guide Contents">
+        <div class="aside-box">
+          <h2 class="aside-heading">Syllabus Index</h2>
+          <ul class="toc-list">
+            <li><a class="toc-link" href="#unit-1"><span class="index-num">01</span> Introduction to Data Science</a></li>
+            <li><a class="toc-link" href="#unit-2"><span class="index-num">02</span> Warehouse &amp; Preprocessing</a></li>
+            <li><a class="toc-link" href="#unit-3"><span class="index-num">03</span> Classification &amp; Regression</a></li>
+            <li><a class="toc-link" href="#unit-4"><span class="index-num">04</span> Clustering Methods</a></li>
+            <li><a class="toc-link" href="#unit-5"><span class="index-num">05</span> Association Rule Mining</a></li>
+            <li><a class="toc-link" href="#unit-6"><span class="index-num">06</span> Data Visualization</a></li>
+          </ul>
+        </div>
+
+        <div class="aside-box">
+          <h2 class="aside-heading">5-Mark Answer Blueprint</h2>
+          <p style="font-size: 0.875rem; margin: 0 0 var(--space-sm); color: var(--on-surface-variant);">
+            Every question below is structured for full exam credit:
+          </p>
+          <ol style="font-size: 0.875rem; padding-left: 1.2rem; margin: 0; color: var(--on-surface);">
+            <li><strong>1 Mark:</strong> Crisp definition &amp; core thesis</li>
+            <li><strong>2 Marks:</strong> Mechanism, steps, or formula</li>
+            <li><strong>1 Mark:</strong> Diagram or comparison table</li>
+            <li><strong>1 Mark:</strong> Grounded case study example</li>
+          </ol>
+        </div>
+      </aside>
+
+      <!-- MAIN CONTENT COLUMN -->
+      <main class="main-column">
+
+        <!-- ======================================================= -->
+        <!-- UNIT I -->
+        <!-- ======================================================= -->
+        <section id="unit-1" class="unit-section">
+          <div class="dossier-bar">
+            <div class="dossier-bar-left">
+              <span class="dossier-pill">Unit 01</span>
+              <span class="dossier-meta">7 Hours · Foundations &amp; Lifecycle</span>
+            </div>
+          </div>
+          <h2 class="section-title">Introduction to Data Science</h2>
+          <p class="section-deck">Extracting actionable knowledge from structured and unstructured data through scientific hypothesis testing, engineering pipelines, and predictive modeling.</p>
+
+          <!-- Q1.1 -->
+          <article class="answer-card">
+            <div class="answer-header">
+              <h3 class="answer-title">01.1 Purpose, Need &amp; Data Science Process Lifecycle</h3>
+              <span class="mark-badge">5-Mark Master Answer</span>
+            </div>
+            <div class="framework-grid">
+              <div class="pillar">
+                <span class="pillar-label">1. Definition &amp; Purpose (1 Mark)</span>
+                <p><span class="kw">Data Science</span> combines raw <span class="kw">data</span> (information collected from sensors, transactions, and media) with <span class="kw">science</span> (systematic hypothesis testing and evidence-based inquiry). It is an <span class="kw">interdisciplinary field</span> using scientific methods, algorithms, and systems to extract <span class="kw">knowledge and insights</span> from both <span class="kw">structured and unstructured data</span>.</p>
+              </div>
+              <div class="pillar">
+                <span class="pillar-label">2. Need in Modern Industries (1 Mark)</span>
+                <ul>
+                  <li><span class="kw">Pattern Detection:</span> Discovers hidden patterns in seemingly unconnected, high-volume datasets to support reliable <span class="kw">predictions and conclusions</span>.</li>
+                  <li><span class="kw">Value Monetization:</span> Enables technology and retail enterprises to convert raw user telemetry into <span class="kw">profitable, actionable intelligence</span>.</li>
+                </ul>
+              </div>
+              <div class="pillar">
+                <span class="pillar-label">3. The 6-Stage Data Science Process (2 Marks)</span>
+                <p>Click any stage in the interactive lifecycle schematic below to inspect its inputs, outputs, and analytical methods:</p>
+                <div class="diagram-box">
+                  <svg viewBox="0 0 820 140" width="100%" role="img" aria-label="6-stage Data Science Process Lifecycle">
+                    <defs>
+                      <marker id="arrow-u1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                        <path d="M 0 1 L 10 5 L 0 9 z" fill="var(--outline)"></path>
+                      </marker>
+                    </defs>
+                    <!-- Connectors -->
+                    <line x1="125" y1="65" x2="145" y2="65" stroke="var(--outline)" stroke-width="1.8" marker-end="url(#arrow-u1)" />
+                    <line x1="260" y1="65" x2="280" y2="65" stroke="var(--outline)" stroke-width="1.8" marker-end="url(#arrow-u1)" />
+                    <line x1="395" y1="65" x2="415" y2="65" stroke="var(--outline)" stroke-width="1.8" marker-end="url(#arrow-u1)" />
+                    <line x1="530" y1="65" x2="550" y2="65" stroke="var(--outline)" stroke-width="1.8" marker-end="url(#arrow-u1)" />
+                    <line x1="665" y1="65" x2="685" y2="65" stroke="var(--outline)" stroke-width="1.8" marker-end="url(#arrow-u1)" />
+
+                    <!-- Nodes -->
+                    <g class="svg-node selected" data-u1-step="0" onclick="selectLifecycleStep(0)" tabindex="0" role="button" aria-label="Stage 1 Problem Formulation">
+                      <rect x="10" y="30" width="115" height="70" rx="6" fill="var(--surface-container-low)" stroke="var(--outline)" stroke-width="1.5"/>
+                      <text x="67" y="55" text-anchor="middle" font-family="Geist Mono, monospace" font-size="11" font-weight="600" fill="var(--secondary)">STAGE 01</text>
+                      <text x="67" y="75" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="12" font-weight="700" fill="var(--on-surface)">Problem</text>
+                      <text x="67" y="90" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="12" font-weight="700" fill="var(--on-surface)">Formulation</text>
+                    </g>
+                    <g class="svg-node" data-u1-step="1" onclick="selectLifecycleStep(1)" tabindex="0" role="button" aria-label="Stage 2 Data Collection">
+                      <rect x="145" y="30" width="115" height="70" rx="6" fill="var(--surface-container-low)" stroke="var(--outline)" stroke-width="1.5"/>
+                      <text x="202" y="55" text-anchor="middle" font-family="Geist Mono, monospace" font-size="11" font-weight="600" fill="var(--secondary)">STAGE 02</text>
+                      <text x="202" y="75" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="12" font-weight="700" fill="var(--on-surface)">Data</text>
+                      <text x="202" y="90" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="12" font-weight="700" fill="var(--on-surface)">Collection</text>
+                    </g>
+                    <g class="svg-node" data-u1-step="2" onclick="selectLifecycleStep(2)" tabindex="0" role="button" aria-label="Stage 3 Preprocessing">
+                      <rect x="280" y="30" width="115" height="70" rx="6" fill="var(--surface-container-low)" stroke="var(--outline)" stroke-width="1.5"/>
+                      <text x="337" y="55" text-anchor="middle" font-family="Geist Mono, monospace" font-size="11" font-weight="600" fill="var(--secondary)">STAGE 03</text>
+                      <text x="337" y="75" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="12" font-weight="700" fill="var(--on-surface)">Cleaning &amp;</text>
+                      <text x="337" y="90" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="12" font-weight="700" fill="var(--on-surface)">Prep</text>
+                    </g>
+                    <g class="svg-node" data-u1-step="3" onclick="selectLifecycleStep(3)" tabindex="0" role="button" aria-label="Stage 4 Exploratory Analysis">
+                      <rect x="415" y="30" width="115" height="70" rx="6" fill="var(--surface-container-low)" stroke="var(--outline)" stroke-width="1.5"/>
+                      <text x="472" y="55" text-anchor="middle" font-family="Geist Mono, monospace" font-size="11" font-weight="600" fill="var(--secondary)">STAGE 04</text>
+                      <text x="472" y="75" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="12" font-weight="700" fill="var(--on-surface)">Exploratory</text>
+                      <text x="472" y="90" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="12" font-weight="700" fill="var(--on-surface)">Analysis</text>
+                    </g>
+                    <g class="svg-node" data-u1-step="4" onclick="selectLifecycleStep(4)" tabindex="0" role="button" aria-label="Stage 5 Model Building">
+                      <rect x="550" y="30" width="115" height="70" rx="6" fill="var(--surface-container-low)" stroke="var(--outline)" stroke-width="1.5"/>
+                      <text x="607" y="55" text-anchor="middle" font-family="Geist Mono, monospace" font-size="11" font-weight="600" fill="var(--secondary)">STAGE 05</text>
+                      <text x="607" y="75" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="12" font-weight="700" fill="var(--on-surface)">Model</text>
+                      <text x="607" y="90" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="12" font-weight="700" fill="var(--on-surface)">Building</text>
+                    </g>
+                    <g class="svg-node" data-u1-step="5" onclick="selectLifecycleStep(5)" tabindex="0" role="button" aria-label="Stage 6 Model Deployment">
+                      <rect x="685" y="30" width="125" height="70" rx="6" fill="var(--surface-container-low)" stroke="var(--outline)" stroke-width="1.5"/>
+                      <text x="747" y="55" text-anchor="middle" font-family="Geist Mono, monospace" font-size="11" font-weight="600" fill="var(--secondary)">STAGE 06</text>
+                      <text x="747" y="75" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="12" font-weight="700" fill="var(--on-surface)">Deployment</text>
+                      <text x="747" y="90" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="12" font-weight="700" fill="var(--on-surface)">&amp; Monitor</text>
+                    </g>
+                  </svg>
+                  <div id="u1-lifecycle-detail" class="lab-output" style="margin-top: var(--space-sm);">
+                    <strong>Stage 01 — Problem Formulation:</strong> Define business objectives, measurable KPIs, and target variables (e.g., predicting credit card default probability) before acquiring data.
+                  </div>
+                </div>
+              </div>
+              <div class="pillar">
+                <span class="pillar-label">4. Example Application (1 Mark)</span>
+                <p><strong>Email Spam Filtering &amp; E-Commerce Recommendations:</strong> Classifying incoming messages into <span class="kw">spam</span> or <span class="kw">non-spam</span> and modeling customer purchase telemetry to trigger real-time product bundles.</p>
+              </div>
+            </div>
+          </article>
+
+          <!-- Q1.2 & Q1.3 -->
+          <div class="two-col">
+            <article class="answer-card">
+              <div class="answer-header">
+                <h3 class="answer-title">01.2 Data Taxonomy Comparisons</h3>
+                <span class="mark-badge">5-Mark Matrix</span>
+              </div>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Dimension</th>
+                      <th>Type A</th>
+                      <th>Type B</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><strong>Format</strong></td>
+                      <td><span class="kw">Structured Data:</span> Fixed schema, rows &amp; columns (SQL RDBMS, CSV).</td>
+                      <td><span class="kw">Unstructured Data:</span> No predefined schema (Word, PDF, Text, Media logs, Images).</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Measurement</strong></td>
+                      <td><span class="kw">Quantitative:</span> Numerical magnitudes; split into <strong>discrete</strong> (counts) &amp; <strong>continuous</strong> (height, income).</td>
+                      <td><span class="kw">Categorical (Nominal):</span> Qualitative labels/groups (color, car type, Yes/No).</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Scale</strong></td>
+                      <td><span class="kw">Small Data:</span> Human-readable volume, concise, fits single-machine analysis.</td>
+                      <td><span class="kw">Big Data:</span> Massive Volume, Velocity, Variety requiring distributed storage.</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Analytics</strong></td>
+                      <td><span class="kw">Business Intelligence (BI):</span> Descriptive &amp; historical reporting (what happened?).</td>
+                      <td><span class="kw">Data Science:</span> Predictive &amp; prescriptive modeling (what will happen &amp; why?).</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </article>
+
+            <article class="answer-card">
+              <div class="answer-header">
+                <h3 class="answer-title">01.3 Data Science Team Roles</h3>
+                <span class="mark-badge">5-Mark Matrix</span>
+              </div>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Role</th>
+                      <th>Primary Responsibility</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><strong>Data Scientist</strong></td>
+                      <td>Formulates hypotheses, performs <span class="kw">statistical modeling</span>, trains ML algorithms, and communicates predictive insights.</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Data Architect</strong></td>
+                      <td>Designs enterprise <span class="kw">data blueprints</span>, schemas, governance standards, and warehouse integration topology.</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Data Engineer</strong></td>
+                      <td>Builds scalable <span class="kw">ETL/ELT pipelines</span>, ingests raw streams, and prepares clean datasets for model training.</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Database Admin (DBA)</strong></td>
+                      <td>Maintains <span class="kw">database availability</span>, indexing, security permissions, backup recovery, and query performance.</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <!-- ======================================================= -->
+        <!-- UNIT II -->
+        <!-- ======================================================= -->
+        <section id="unit-2" class="unit-section">
+          <div class="dossier-bar">
+            <div class="dossier-bar-left">
+              <span class="dossier-pill">Unit 02</span>
+              <span class="dossier-meta">7 Hours · Data Warehousing &amp; Preprocessing</span>
+            </div>
+          </div>
+          <h2 class="section-title">Data Warehouse Architecture &amp; Preprocessing</h2>
+          <p class="section-deck">Consolidating multi-source operational records via 3-tier ETL warehousing and transforming noisy attributes into clean, scaled inputs for machine learning.</p>
+
+          <!-- Q2.1 -->
+          <article class="answer-card">
+            <div class="answer-header">
+              <h3 class="answer-title">02.1 3-Tier Data Warehouse Architecture, ETL &amp; OLAP</h3>
+              <span class="mark-badge">5-Mark Master Answer</span>
+            </div>
+            <div class="framework-grid">
+              <div class="pillar">
+                <span class="pillar-label">1. Definition &amp; Core Properties (1 Mark)</span>
+                <p>A <span class="kw">Data Warehouse (DW)</span> is a <span class="kw">subject-oriented, integrated, time-variant, and non-volatile</span> collection of data supporting management decision-making. Unlike an <span class="kw">Operational Data Store (ODS)</span> or raw <span class="kw">Data Lake</span>, it stores historical, schema-verified analytical records.</p>
+              </div>
+              <div class="pillar">
+                <span class="pillar-label">2. Key Components &amp; Terms (1 Mark)</span>
+                <ul>
+                  <li><span class="kw">Data Lake vs. Data Mart:</span> A <strong>Data Lake</strong> holds raw structured/unstructured dumps; a <strong>Data Mart</strong> is a department-specific subset (e.g., Finance or Sales).</li>
+                  <li><span class="kw">Fact Table:</span> Central table in a Star/Snowflake schema holding quantitative <span class="kw">measures</span> (loan amount, #transactions, balance) and foreign keys to <span class="kw">dimension hierarchies</span> (e.g., <em>branch → city → state</em>).</li>
+                </ul>
+              </div>
+              <div class="pillar">
+                <span class="pillar-label">3. Interactive 3-Tier Architecture &amp; OLAP Schematic (2 Marks)</span>
+                <p>Select any tier or OLAP server component below to inspect its role in the data flow:</p>
+                <div class="diagram-box">
+                  <svg viewBox="0 0 820 210" width="100%" role="img" aria-label="3-Tier Data Warehouse and ETL Architecture">
+                    <defs>
+                      <marker id="arrow-u2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                        <path d="M 0 1 L 10 5 L 0 9 z" fill="var(--outline)"></path>
+                      </marker>
+                    </defs>
+                    <!-- Tier Labels -->
+                    <text x="85" y="18" text-anchor="middle" font-family="Geist Mono, monospace" font-size="11" font-weight="600" fill="var(--on-surface-variant)">TIER 1: BOTTOM</text>
+                    <text x="410" y="18" text-anchor="middle" font-family="Geist Mono, monospace" font-size="11" font-weight="600" fill="var(--on-surface-variant)">TIER 2: MIDDLE (OLAP)</text>
+                    <text x="720" y="18" text-anchor="middle" font-family="Geist Mono, monospace" font-size="11" font-weight="600" fill="var(--on-surface-variant)">TIER 3: TOP</text>
+
+                    <!-- Arrows -->
+                    <line x1="155" y1="80" x2="185" y2="80" stroke="var(--outline)" stroke-width="1.6" marker-end="url(#arrow-u2)"/>
+                    <line x1="305" y1="80" x2="335" y2="80" stroke="var(--outline)" stroke-width="1.6" marker-end="url(#arrow-u2)"/>
+                    <line x1="485" y1="80" x2="515" y2="80" stroke="var(--outline)" stroke-width="1.6" marker-end="url(#arrow-u2)"/>
+                    <line x1="625" y1="80" x2="655" y2="80" stroke="var(--outline)" stroke-width="1.6" marker-end="url(#arrow-u2)"/>
+                    <line x1="410" y1="125" x2="410" y2="145" stroke="var(--outline)" stroke-width="1.5" stroke-dasharray="4 3"/>
+
+                    <g class="svg-node selected" data-u2-node="0" onclick="selectDWNode(0)" tabindex="0" role="button" aria-label="Source Systems">
+                      <rect x="15" y="40" width="140" height="80" rx="6" fill="var(--surface-container-low)" stroke="var(--outline)" stroke-width="1.5"/>
+                      <text x="85" y="74" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="13" font-weight="700" fill="var(--on-surface)">Source Systems</text>
+                      <text x="85" y="94" text-anchor="middle" font-family="Geist Mono, monospace" font-size="10.5" fill="var(--on-surface-variant)">ERP · CRM · Logs</text>
+                    </g>
+
+                    <g class="svg-node" data-u2-node="1" onclick="selectDWNode(1)" tabindex="0" role="button" aria-label="ETL Pipeline">
+                      <rect x="185" y="40" width="120" height="80" rx="6" fill="var(--surface-container-low)" stroke="var(--outline)" stroke-width="1.5"/>
+                      <text x="245" y="74" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="13" font-weight="700" fill="var(--on-surface)">ETL Layer</text>
+                      <text x="245" y="94" text-anchor="middle" font-family="Geist Mono, monospace" font-size="10.5" fill="var(--on-surface-variant)">Extract·Clean·Load</text>
+                    </g>
+
+                    <g class="svg-node" data-u2-node="2" onclick="selectDWNode(2)" tabindex="0" role="button" aria-label="Central DW and Data Marts">
+                      <rect x="335" y="35" width="150" height="90" rx="6" fill="var(--surface-container-low)" stroke="var(--outline)" stroke-width="1.5"/>
+                      <text x="410" y="68" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="13" font-weight="700" fill="var(--on-surface)">Central Repository</text>
+                      <text x="410" y="88" text-anchor="middle" font-family="Geist Mono, monospace" font-size="10.5" fill="var(--on-surface-variant)">Facts + Data Marts</text>
+                      <text x="410" y="105" text-anchor="middle" font-family="Geist Mono, monospace" font-size="10.5" fill="var(--secondary)">Star / Snowflake</text>
+                    </g>
+
+                    <g class="svg-node" data-u2-node="3" onclick="selectDWNode(3)" tabindex="0" role="button" aria-label="Metadata Repository">
+                      <rect x="335" y="145" width="150" height="48" rx="6" fill="var(--surface-container)" stroke="var(--outline)" stroke-width="1.5"/>
+                      <text x="410" y="173" text-anchor="middle" font-family="Geist Mono, monospace" font-size="11.5" font-weight="600" fill="var(--on-surface)">Metadata &amp; Refresh</text>
+                    </g>
+
+                    <g class="svg-node" data-u2-node="4" onclick="selectDWNode(4)" tabindex="0" role="button" aria-label="OLAP Server">
+                      <rect x="515" y="40" width="110" height="80" rx="6" fill="var(--surface-container-low)" stroke="var(--outline)" stroke-width="1.5"/>
+                      <text x="570" y="70" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="13" font-weight="700" fill="var(--on-surface)">OLAP Engine</text>
+                      <text x="570" y="90" text-anchor="middle" font-family="Geist Mono, monospace" font-size="10.5" fill="var(--on-surface-variant)">ROLAP / MOLAP</text>
+                      <text x="570" y="105" text-anchor="middle" font-family="Geist Mono, monospace" font-size="10.5" fill="var(--on-surface-variant)">HOLAP</text>
+                    </g>
+
+                    <g class="svg-node" data-u2-node="5" onclick="selectDWNode(5)" tabindex="0" role="button" aria-label="End Users and BI">
+                      <rect x="655" y="40" width="150" height="80" rx="6" fill="var(--surface-container-low)" stroke="var(--outline)" stroke-width="1.5"/>
+                      <text x="730" y="74" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="13" font-weight="700" fill="var(--on-surface)">End Users &amp; BI</text>
+                      <text x="730" y="94" text-anchor="middle" font-family="Geist Mono, monospace" font-size="10.5" fill="var(--on-surface-variant)">Pivot · Slice · Dice</text>
+                    </g>
+                  </svg>
+                  <div id="u2-dw-detail" class="lab-output" style="margin-top: var(--space-sm);">
+                    <strong>Source Systems:</strong> Heterogeneous operational databases (banking transactions, hospital EHRs, retail POS) feeding raw transactional records into the staging area.
+                  </div>
+                </div>
+              </div>
+              <div class="pillar">
+                <span class="pillar-label">4. Advantages, Disadvantages &amp; Case Study (1 Mark)</span>
+                <p><strong>Advantages:</strong> Unified historical truth, fast aggregate OLAP queries (Roll-up, Drill-down, Rotation/Pivot Table). <strong>Disadvantages:</strong> High upfront ETL maintenance cost and latency during batch materialized-view refresh. <strong>Hospital &amp; Banking Example:</strong> Tracking multi-year patient admissions or loan balances across <em>branch → city → state</em> hierarchies.</p>
+              </div>
+            </div>
+          </article>
+
+          <!-- Q2.2 -->
+          <article class="answer-card">
+            <div class="answer-header">
+              <h3 class="answer-title">02.2 Five Core Data Preprocessing Techniques</h3>
+              <span class="mark-badge">5-Mark Master Answer</span>
+            </div>
+            <div class="framework-grid">
+              <div class="pillar">
+                <span class="pillar-label">1. Concept &amp; Need (1 Mark)</span>
+                <p>Real-world data is <span class="kw">incomplete</span> (missing attributes), <span class="kw">noisy</span> (errors/outliers), and <span class="kw">inconsistent</span> (naming discrepancies). <span class="kw">Data Preprocessing</span> improves model accuracy and convergence speed ("Garbage In, Garbage Out").</p>
+              </div>
+              <div class="pillar">
+                <span class="pillar-label">2. Five Preprocessing Pillars (3 Marks)</span>
+                <div class="table-wrap">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Technique</th>
+                        <th>Core Mechanism &amp; Methods</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td><strong>1. Data Cleaning</strong></td>
+                        <td>Fills <span class="kw">missing values</span> (mean/median imputation, global constant), smooths <span class="kw">noisy data</span> (binning, regression, clustering), and removes <span class="kw">outliers</span>.</td>
+                      </tr>
+                      <tr>
+                        <td><strong>2. Data Integration</strong></td>
+                        <td>Merges multiple databases/cubes; resolves <span class="kw">entity identification</span>, schema conflicts, and correlation-based <span class="kw">redundancy</span> ($\chi^2$ / Pearson).</td>
+                      </tr>
+                      <tr>
+                        <td><strong>3. Data Reduction</strong></td>
+                        <td>Produces a reduced volume with identical analytical results via <span class="kw">dimensionality reduction</span> (PCA), numerosity reduction, and data cube aggregation.</td>
+                      </tr>
+                      <tr>
+                        <td><strong>4. Data Transformation</strong></td>
+                        <td>Scales and reshapes attributes using <span class="kw">Min-Max Normalization</span>, <span class="kw">Z-Score Standardization</span>, and attribute construction.</td>
+                      </tr>
+                      <tr>
+                        <td><strong>5. Data Discretization</strong></td>
+                        <td>Converts <span class="kw">continuous numerical attributes</span> into <span class="kw">categorical intervals or binary flags</span> required by Decision Trees and Association Rule Mining.</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="pillar">
+                <span class="pillar-label">3. Retail Case Study (1 Mark)</span>
+                <p><strong>Retail Customer Preprocessing:</strong> Cleaning null postal codes, standardizing customer incomes via Z-score for k-NN/SVM, and discretizing <em>Age</em> into brackets (18–25, 26–40, 41+) for market basket profiling.</p>
+              </div>
+            </div>
+          </article>
+
+          <!-- NUMERICAL LAB 2A -->
+          <article class="lab-panel" id="lab-u2">
+            <div class="lab-header">
+              <div>
+                <span class="dossier-pill" style="margin-bottom: var(--space-xs);">Numerical Lab 2A</span>
+                <h3 class="lab-title">Normalization (Min-Max &amp; Z-Score) &amp; Binning Smoothing</h3>
+              </div>
+              <span class="status-tag status-info">Interactive Calculator</span>
+            </div>
+
+            <div class="two-col">
+              <div>
+                <h4 class="step-heading">Exam Reference Formulas</h4>
+                <div class="math-block">
+                  $$v'_{\text{minmax}} = \frac{v - \min_A}{\max_A - \min_A}(\text{new\_max}_A - \text{new\_min}_A) + \text{new\_min}_A$$
+                </div>
+                <div class="math-block">
+                  $$v'_{\text{z-score}} = \frac{v - \mu}{\sigma}, \quad \text{where } \sigma = \sqrt{\frac{1}{N}\sum_{i=1}^{N}(x_i - \mu)^2}$$
+                </div>
+              </div>
+              <div>
+                <h4 class="step-heading">Worked Example (Sorted Price Data)</h4>
+                <p style="font-size: 0.9375rem; margin-top: 0;">
+                  Given sorted values $X = [4, 8, 15, 21, 21, 24, 25, 28, 34]$ ($N=9$):<br>
+                  <strong>Min-Max $[0, 1]$ for $v = 21$:</strong> $\frac{21 - 4}{34 - 4}(1 - 0) + 0 = \frac{17}{30} = \mathbf{0.567}$.<br>
+                  <strong>Equal-Frequency Binning ($k=3$, depth $=3$):</strong><br>
+                  Bin 1: $[4, 8, 15]$ (Mean $= 9.0$) → Boundaries $[4, 4, 15]$<br>
+                  Bin 2: $[21, 21, 24]$ (Mean $= 22.0$) → Boundaries $[21, 21, 24]$<br>
+                  Bin 3: $[25, 28, 34]$ (Mean $= 29.0$) → Boundaries $[25, 25, 34]$
+                </p>
+              </div>
+            </div>
+
+            <hr style="border: none; border-top: 1px solid var(--outline-variant); margin: var(--space-md) 0;">
+
+            <div class="control-row">
+              <div class="field-group" style="flex: 2 1 260px;">
+                <label class="field-label" for="norm-data-input">Numeric Array (comma-separated)</label>
+                <input class="field-input" id="norm-data-input" type="text" value="4, 8, 15, 21, 21, 24, 25, 28, 34">
+              </div>
+              <div class="field-group" style="flex: 0 1 110px;">
+                <label class="field-label" for="norm-min-input">new_min</label>
+                <input class="field-input" id="norm-min-input" type="number" step="0.1" value="0">
+              </div>
+              <div class="field-group" style="flex: 0 1 110px;">
+                <label class="field-label" for="norm-max-input">new_max</label>
+                <input class="field-input" id="norm-max-input" type="number" step="0.1" value="1">
+              </div>
+              <div class="field-group" style="flex: 0 1 110px;">
+                <label class="field-label" for="bin-count-input">Bins (k)</label>
+                <input class="field-input" id="bin-count-input" type="number" min="2" max="6" value="3">
+              </div>
+              <button type="button" class="btn btn-primary" onclick="computePreprocessingLab()">Calculate Steps</button>
+            </div>
+            <div id="norm-error-msg" class="field-error" aria-live="polite"></div>
+
+            <div id="norm-lab-output" class="lab-output"></div>
+
+            <details class="code-details">
+              <summary>Python Demo: Min-Max, Z-Score &amp; Equal-Frequency Binning (Pandas / Scikit-Learn)</summary>
+              <div class="code-block-wrap">
+<pre><code>import numpy as np
+import pandas as pd
+from sklearn.preprocessing import MinMaxScaler, StandardScaler
+
+data = np.array([[4], [8], [15], [21], [21], [24], [25], [28], [34]])
+
+minmax = MinMaxScaler(feature_range=(0, 1)).fit_transform(data)
+zscore = StandardScaler().fit_transform(data)
+bins = pd.qcut(data.ravel(), q=3, labels=["Low", "Medium", "High"])
+
+print("Min-Max:", np.round(minmax.ravel(), 3))
+print("Z-Score:", np.round(zscore.ravel(), 3))
+print("Bins:   ", list(bins))</code></pre>
+              </div>
+            </details>
+          </article>
+        </section>
+
+        <!-- ======================================================= -->
+        <!-- UNIT III -->
+        <!-- ======================================================= -->
+        <section id="unit-3" class="unit-section">
+          <div class="dossier-bar">
+            <div class="dossier-bar-left">
+              <span class="dossier-pill">Unit 03</span>
+              <span class="dossier-meta">7 Hours · Supervised Learning</span>
+            </div>
+          </div>
+          <h2 class="section-title">Classification &amp; Regression</h2>
+          <p class="section-deck">Predicting discrete class categories and continuous numeric outcomes, reinforced by worked Entropy, Information Gain, Gini Index, and Naïve Bayes derivations.</p>
+
+          <!-- Q3.1 -->
+          <article class="answer-card">
+            <div class="answer-header">
+              <h3 class="answer-title">03.1 Classification vs. Regression &amp; Classification Types</h3>
+              <span class="mark-badge">5-Mark Master Answer</span>
+            </div>
+            <div class="framework-grid">
+              <div class="pillar">
+                <span class="pillar-label">1. Definition (1 Mark)</span>
+                <p><span class="kw">Classification</span> is a <span class="kw">supervised learning</span> technique that maps input features from labeled training data to discrete <span class="kw">categorical class labels</span>. <span class="kw">Regression</span> models the relationship between predictor variables and a <span class="kw">continuous numeric outcome</span> by fitting a line or curve that minimizes vertical prediction error.</p>
+              </div>
+              <div class="pillar">
+                <span class="pillar-label">2. Three Types of Classification (1 Mark)</span>
+                <ul>
+                  <li><span class="kw">Binary Classification:</span> Exactly two mutually exclusive states — class <code>0</code> (normal, e.g., <em>not spam</em> / <em>cancer not identified</em>) vs. class <code>1</code> (abnormal, e.g., <em>spam</em> / <em>cancer detected</em>).</li>
+                  <li><span class="kw">Multi-Class Classification:</span> More than two classes with no normal/abnormal hierarchy; each sample gets <strong>one</strong> label (e.g., eCommerce grouping: <em>Electronics, Clothing, or Home Decor</em>).</li>
+                  <li><span class="kw">Multi-Label Classification:</span> Assigns <strong>two or more non-exclusive</strong> labels simultaneously to one item (e.g., photo tagged <em>"dog", "ball", and "park"</em>).</li>
+                </ul>
+              </div>
+              <div class="pillar">
+                <span class="pillar-label">3. Comparison Matrix (2 Marks)</span>
+                <div class="table-wrap">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Parameter</th>
+                        <th>Classification</th>
+                        <th>Regression</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td><strong>Target Output</strong></td>
+                        <td>Discrete / Categorical class labels</td>
+                        <td>Continuous real-valued numbers</td>
+                      </tr>
+                      <tr>
+                        <td><strong>Objective</strong></td>
+                        <td>Find an optimal <span class="kw">decision boundary</span></td>
+                        <td>Find a <span class="kw">best-fit line or curve</span> minimizing vertical residuals</td>
+                      </tr>
+                      <tr>
+                        <td><strong>Core Algorithms</strong></td>
+                        <td>Logistic Regression, Decision Tree, Random Forest, k-NN, Naïve Bayes, SVM</td>
+                        <td>Simple/Multiple Linear Regression, Polynomial Regression, SVR, Ridge/Lasso</td>
+                      </tr>
+                      <tr>
+                        <td><strong>Evaluation Metrics</strong></td>
+                        <td><span class="kw">Accuracy, Precision, Recall, F1-score, Confusion Matrix, ROC</span></td>
+                        <td>MSE, RMSE, MAE, <span class="kw">R-squared ($R^2$)</span></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="pillar">
+                <span class="pillar-label">4. Credit Card Default Case Study &amp; Ethics (1 Mark)</span>
+                <p><strong>Credit Card Default Prediction:</strong> Classifying cardholders into <code>Default = Yes (1)</code> or <code>No (0)</code> using balance, income, and payment history while auditing features for bias to ensure <span class="kw">fairness, transparency, and accountability</span>.</p>
+              </div>
+            </div>
+          </article>
+
+          <!-- Q3.2 -->
+          <article class="answer-card">
+            <div class="answer-header">
+              <h3 class="answer-title">03.2 Core Classifiers: Tree, Forest, k-NN, Naïve Bayes &amp; SVM</h3>
+              <span class="mark-badge">5-Mark Master Answer</span>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Algorithm</th>
+                    <th>Working Mechanism &amp; Keywords</th>
+                    <th>Key Advantage / Trade-off</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Decision Tree (CART)</strong></td>
+                    <td>Hierarchical tree where internal <span class="kw">Decision Nodes</span> test attributes via <span class="kw">ASM</span> (Information Gain or Gini Index), branches represent outcomes, and <span class="kw">Leaf Nodes</span> emit predictions.</td>
+                    <td>Highly interpretable; prevents <span class="kw">overfitting</span> via <span class="kw">Cost Complexity Pruning</span> or <span class="kw">Reduced Error Pruning</span>.</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Random Forest</strong></td>
+                    <td><span class="kw">Ensemble method</span> aggregating predictions from multiple diverse decision trees via majority vote (classification) or mean (regression).</td>
+                    <td>Corrects single decision tree overfitting and boosts stability.</td>
+                  </tr>
+                  <tr>
+                    <td><strong>K-Nearest Neighbors (k-NN)</strong></td>
+                    <td>Instance-based learner measuring <span class="kw">Euclidean distance</span> to the $k$ closest training records and assigning the majority class.</td>
+                    <td>Zero training cost; sensitive to feature scaling (requires Unit II normalization).</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Naïve Bayes</strong></td>
+                    <td>Applies <span class="kw">Bayes Theorem</span> $P(A|B) = \frac{P(B|A)P(A)}{P(B)}$ assuming <span class="kw">conditional independence</span> among input features.</td>
+                    <td>Fast, effective on small datasets; ideal for text classification &amp; sentiment analysis.</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Support Vector Machine (SVM)</strong></td>
+                    <td>Finds the <span class="kw">optimal hyperplane</span> in $N$-dimensional space that <span class="kw">maximizes the margin</span> between the nearest support vectors of each class.</td>
+                    <td>Strong in high-dimensional spaces; handles non-linear boundaries with kernels.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </article>
+
+          <!-- NUMERICAL LAB 3A: DECISION TREE ENTROPY & INFORMATION GAIN -->
+          <article class="lab-panel" id="lab-dt">
+            <div class="lab-header">
+              <div>
+                <span class="dossier-pill" style="margin-bottom: var(--space-xs);">Numerical Lab 3A</span>
+                <h3 class="lab-title">Decision Tree: Entropy, Information Gain &amp; Gini Index</h3>
+              </div>
+              <span class="status-tag status-info">Interactive Split Explorer</span>
+            </div>
+
+            <p style="margin-top: 0;">Consider an <strong>8-customer Credit Card Default dataset</strong> ($S$, 4 Yes / 4 No) with attributes <code>CreditHistory</code>, <code>Income</code>, and <code>Debt</code>:</p>
+
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>CreditHistory</th>
+                    <th>Income</th>
+                    <th>Debt</th>
+                    <th>Default (Target)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td class="num">1</td><td>Bad</td><td>Low</td><td>High</td><td><span class="status-tag status-fail">Yes</span></td></tr>
+                  <tr><td class="num">2</td><td>Bad</td><td>Medium</td><td>High</td><td><span class="status-tag status-fail">Yes</span></td></tr>
+                  <tr><td class="num">3</td><td>Unknown</td><td>Low</td><td>High</td><td><span class="status-tag status-fail">Yes</span></td></tr>
+                  <tr><td class="num">4</td><td>Good</td><td>Low</td><td>Low</td><td><span class="status-tag status-pass">No</span></td></tr>
+                  <tr><td class="num">5</td><td>Good</td><td>High</td><td>Low</td><td><span class="status-tag status-pass">No</span></td></tr>
+                  <tr><td class="num">6</td><td>Unknown</td><td>High</td><td>Low</td><td><span class="status-tag status-pass">No</span></td></tr>
+                  <tr><td class="num">7</td><td>Bad</td><td>High</td><td>Low</td><td><span class="status-tag status-pass">No</span></td></tr>
+                  <tr><td class="num">8</td><td>Unknown</td><td>Medium</td><td>High</td><td><span class="status-tag status-fail">Yes</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="math-block">
+              $$\text{Entropy}(S) = -P(\text{Yes})\log_2 P(\text{Yes}) - P(\text{No})\log_2 P(\text{No}) = -\frac{4}{8}\log_2\frac{4}{8} - \frac{4}{8}\log_2\frac{4}{8} = 1.000 \text{ bit}$$
+              $$\text{Gini}(S) = 1 - \sum_j P_j^2 = 1 - \left(\frac{4}{8}\right)^2 - \left(\frac{4}{8}\right)^2 = 0.500$$
+            </div>
+
+            <div class="control-row">
+              <div class="field-group" style="max-width: 300px;">
+                <label class="field-label" for="dt-attr-select">Test Attribute at Root Node</label>
+                <select class="field-select" id="dt-attr-select" onchange="renderDecisionTreeLab()">
+                  <option value="Debt">Debt (High vs. Low) — Optimal Split</option>
+                  <option value="CreditHistory">CreditHistory (Bad / Unknown / Good)</option>
+                  <option value="Income">Income (Low / Medium / High)</option>
+                </select>
+              </div>
+              <div class="btn-row">
+                <button type="button" class="btn btn-secondary" onclick="setDTAttr('CreditHistory')">Compare CreditHistory</button>
+                <button type="button" class="btn btn-secondary" onclick="setDTAttr('Income')">Compare Income</button>
+                <button type="button" class="btn btn-primary" onclick="setDTAttr('Debt')">Select Best Root (Debt)</button>
+              </div>
+            </div>
+
+            <div id="dt-lab-output" class="lab-output"></div>
+          </article>
+
+          <!-- NUMERICAL LAB 3B: NAIVE BAYES -->
+          <article class="lab-panel" id="lab-nb">
+            <div class="lab-header">
+              <div>
+                <span class="dossier-pill" style="margin-bottom: var(--space-xs);">Numerical Lab 3B</span>
+                <h3 class="lab-title">Naïve Bayes Classifier: Step-by-Step Posterior Calculation</h3>
+              </div>
+              <span class="status-tag status-info">Live Classifier</span>
+            </div>
+
+            <div class="math-block">
+              $$P(C \mid X) = \frac{P(X \mid C)\,P(C)}{P(X)} \propto P(C) \prod_{i=1}^{n} P(x_i \mid C)$$
+            </div>
+
+            <p>Using the same 8-record Credit Default table above ($P(\text{Yes}) = 4/8 = 0.5$, $P(\text{No}) = 4/8 = 0.5$), select an unseen customer profile $X$ to compute the exact step-by-step Naïve Bayes classification (with Laplace $+1$ smoothing when any conditional count is $0$):</p>
+
+            <div class="control-row">
+              <div class="field-group">
+                <label class="field-label" for="nb-history">CreditHistory</label>
+                <select class="field-select" id="nb-history" onchange="computeNaiveBayes()">
+                  <option value="Bad">Bad</option>
+                  <option value="Unknown" selected>Unknown</option>
+                  <option value="Good">Good</option>
+                </select>
+              </div>
+              <div class="field-group">
+                <label class="field-label" for="nb-income">Income</label>
+                <select class="field-select" id="nb-income" onchange="computeNaiveBayes()">
+                  <option value="Low" selected>Low</option>
+                  <option value="Medium">Medium</option>
+                  <option value="High">High</option>
+                </select>
+              </div>
+              <div class="field-group">
+                <label class="field-label" for="nb-debt">Debt</label>
+                <select class="field-select" id="nb-debt" onchange="computeNaiveBayes()">
+                  <option value="High" selected>High</option>
+                  <option value="Low">Low</option>
+                </select>
+              </div>
+            </div>
+
+            <div id="nb-lab-output" class="lab-output"></div>
+
+            <details class="code-details">
+              <summary>Python Demo: Decision Tree &amp; Naïve Bayes (Reading Skills / Credit Default)</summary>
+              <div class="code-block-wrap">
+<pre><code>import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.naive_bayes import CategoricalNB
+from sklearn.metrics import accuracy_score, classification_report
+
+# Example Reading Skills / Native Speaker classification pipeline
+df = pd.read_csv("reading_skills.csv")  # columns: age, shoeSize, score, nativeSpeaker
+X = df[["age", "shoeSize", "score"]]
+y = df["nativeSpeaker"]
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=42)
+dt = DecisionTreeClassifier(criterion="entropy", max_depth=3).fit(X_train, y_train)
+y_pred = dt.predict(X_test)
+
+print("Accuracy:", accuracy_score(y_test, y_pred))
+print(classification_report(y_test, y_pred))</code></pre>
+              </div>
+            </details>
+          </article>
+        </section>
+
+        <!-- ======================================================= -->
+        <!-- UNIT IV -->
+        <!-- ======================================================= -->
+        <section id="unit-4" class="unit-section">
+          <div class="dossier-bar">
+            <div class="dossier-bar-left">
+              <span class="dossier-pill">Unit 04</span>
+              <span class="dossier-meta">7 Hours · Unsupervised Learning</span>
+            </div>
+          </div>
+          <h2 class="section-title">Clustering Algorithms &amp; Customer Segmentation</h2>
+          <p class="section-deck">Partitioning unlabeled observations into cohesive groups with high intra-cluster similarity and low inter-cluster similarity.</p>
+
+          <article class="answer-card">
+            <div class="answer-header">
+              <h3 class="answer-title">04.1 Four Clustering Paradigms &amp; Case Study</h3>
+              <span class="mark-badge">5-Mark Master Answer</span>
+            </div>
+            <div class="framework-grid">
+              <div class="pillar">
+                <span class="pillar-label">1. Definition (1 Mark)</span>
+                <p><span class="kw">Clustering</span> is an <span class="kw">unsupervised learning</span> task that groups unlabeled objects into clusters such that points within the same cluster are maximally similar and points across different clusters are maximally dissimilar.</p>
+              </div>
+              <div class="pillar">
+                <span class="pillar-label">2. Four Algorithm Families (3 Marks)</span>
+                <div class="table-wrap">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Family</th>
+                        <th>Representative Algorithms</th>
+                        <th>Mechanism &amp; Strengths</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td><strong>Centroid-Based (Partitioning)</strong></td>
+                        <td><span class="kw">K-Means</span>, K-Medoids</td>
+                        <td>Minimizes within-cluster sum of squares (WCSS) around $k$ centroids. Fast $O(nkt)$; assumes spherical clusters.</td>
+                      </tr>
+                      <tr>
+                        <td><strong>Density-Based</strong></td>
+                        <td><span class="kw">DBSCAN</span>, OPTICS</td>
+                        <td>Groups dense regions ($\ge \text{MinPts}$ within $\varepsilon$ radius); detects <span class="kw">arbitrary shapes</span> and isolates <span class="kw">noise outliers</span>.</td>
+                      </tr>
+                      <tr>
+                        <td><strong>Connectivity-Based (Hierarchical)</strong></td>
+                        <td><span class="kw">Agglomerative</span> (Bottom-Up), Divisive (Top-Down)</td>
+                        <td>Builds a <span class="kw">Dendrogram</span> using Single, Complete, or Average linkage; no pre-set $k$ needed.</td>
+                      </tr>
+                      <tr>
+                        <td><strong>Distribution-Based</strong></td>
+                        <td><span class="kw">Gaussian Mixture Models (GMM)</span></td>
+                        <td>Models clusters as overlapping probability distributions via Expectation-Maximization (soft cluster assignment).</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="pillar">
+                <span class="pillar-label">3. Customer Segmentation Case Study (1 Mark)</span>
+                <p><strong>Retail Customer Segmentation:</strong> Clustering shoppers by <em>Annual Income</em> and <em>Spending Score</em> (or RFM metrics) into distinct cohorts: High-Value Loyalists, Budget Shoppers, and Churn-Risk Occasional Buyers.</p>
+              </div>
+            </div>
+          </article>
+
+          <!-- Interactive K-Means Stepper -->
+          <article class="lab-panel" id="lab-kmeans">
+            <div class="lab-header">
+              <div>
+                <span class="dossier-pill" style="margin-bottom: var(--space-xs);">Interactive Simulation</span>
+                <h3 class="lab-title">K-Means Customer Segmentation Step-Through ($k = 2$)</h3>
+              </div>
+              <div class="btn-row">
+                <button type="button" class="btn btn-primary" id="km-step-btn" onclick="stepKMeans()">Next Step: Assign Points</button>
+                <button type="button" class="btn btn-secondary" onclick="resetKMeans()">Reset Centroids</button>
+              </div>
+            </div>
+            <div class="two-col" style="align-items: center;">
+              <div class="diagram-box" style="margin: 0;">
+                <svg id="kmeans-svg" viewBox="0 0 380 260" width="100%" role="img" aria-label="2D K-Means Customer Clustering Plot"></svg>
+                <div class="diagram-caption">
+                  <span>X: Annual Income ($k) · Y: Spending Score</span>
+                  <span id="km-iter-label">Iteration 0 · Initialized</span>
+                </div>
+              </div>
+              <div id="km-status-box" class="lab-output" style="margin: 0;">
+                Click <strong>Next Step</strong> to run Euclidean distance assignment and centroid recalculation on 8 customer points.
+              </div>
+            </div>
+          </article>
+        </section>
+
+        <!-- ======================================================= -->
+        <!-- UNIT V -->
+        <!-- ======================================================= -->
+        <section id="unit-5" class="unit-section">
+          <div class="dossier-bar">
+            <div class="dossier-bar-left">
+              <span class="dossier-pill">Unit 05</span>
+              <span class="dossier-meta">7 Hours · Market Basket Analysis</span>
+            </div>
+          </div>
+          <h2 class="section-title">Association Rule Mining: Apriori, ECLAT &amp; FP-Growth</h2>
+          <p class="section-deck">Complete exam-style numerical derivations for Support, Confidence, Lift, Apriori horizontal candidate pruning, ECLAT vertical TID-set intersections, and FP-Tree prefix compression.</p>
+
+          <!-- Q5.1 -->
+          <article class="answer-card">
+            <div class="answer-header">
+              <h3 class="answer-title">05.1 Key Metrics: Support, Confidence &amp; Lift</h3>
+              <span class="mark-badge">5-Mark Master Answer</span>
+            </div>
+            <div class="framework-grid">
+              <div class="pillar">
+                <span class="pillar-label">1. Definition &amp; Importance (1 Mark)</span>
+                <p><span class="kw">Association Rule Mining</span> discovers strong co-occurrence relationships ($X \to Y$) among <span class="kw">frequent itemsets</span> in large transactional databases (Market Basket Analysis) to power cross-selling, store layout, and recommendation engines.</p>
+              </div>
+              <div class="pillar">
+                <span class="pillar-label">2. Core Mathematical Measures (3 Marks)</span>
+                <div class="math-block">
+                  $$\text{Support}(X \to Y) = \frac{\text{Transactions containing }(X \cup Y)}{N}$$
+                  $$\text{Confidence}(X \to Y) = \frac{\text{Support}(X \cup Y)}{\text{Support}(X)} = \frac{\text{Count}(X \cup Y)}{\text{Count}(X)}$$
+                  $$\text{Lift}(X \to Y) = \frac{\text{Confidence}(X \to Y)}{\text{Support}(Y)} = \frac{P(X \cup Y)}{P(X)\cdot P(Y)}$$
+                </div>
+                <p><strong>Support</strong> decides whether an itemset is <span class="kw">frequent</span>; <strong>Confidence</strong> decides whether a rule is <span class="kw">strong</span>; <strong>Lift</strong> measures true correlation ($\text{Lift} > 1$ = positive association, $= 1$ = independent, $< 1$ = negative substitution).</p>
+              </div>
+              <div class="pillar">
+                <span class="pillar-label">3. Exam Flow Shortcut (1 Mark)</span>
+                <p><strong>Apriori Pipeline:</strong> $\text{Transactions} \to C_1 \to L_1 \to C_2 \to L_2 \to C_3 \to L_3 \to \text{Association Rules}$, where $C$ = Candidate itemsets and $L$ = Large/Frequent itemsets.</p>
+              </div>
+            </div>
+          </article>
+
+          <!-- NUMERICAL LAB 5A: APRIORI EXAMPLE 1 -->
+          <article class="answer-card">
+            <div class="answer-header">
+              <h3 class="answer-title">05.2 Solved Example 1: Apriori Algorithm (Supermarket Basket)</h3>
+              <span class="mark-badge">Solved Numerical · Source Exam</span>
+            </div>
+            <p><strong>Given:</strong> 5 Transactions ($N = 5$), <strong>Minimum Support = 60%</strong> ($\text{Min Count} = 5 \times 0.60 = \mathbf{3}$), <strong>Minimum Confidence = 70%</strong>.</p>
+            <div class="two-col">
+              <div class="table-wrap">
+                <table>
+                  <thead><tr><th>TID</th><th>Items Purchased</th></tr></thead>
+                  <tbody>
+                    <tr><td><strong>T1</strong></td><td>Bread, Milk</td></tr>
+                    <tr><td><strong>T2</strong></td><td>Bread, Diaper, Beer, Eggs</td></tr>
+                    <tr><td><strong>T3</strong></td><td>Milk, Diaper, Beer, Cola</td></tr>
+                    <tr><td><strong>T4</strong></td><td>Bread, Milk, Diaper, Beer</td></tr>
+                    <tr><td><strong>T5</strong></td><td>Bread, Milk, Diaper, Cola</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="table-wrap">
+                <table>
+                  <thead><tr><th>$C_1$ Item</th><th class="num">Count</th><th>$L_1$ Status ($\ge 3$)</th></tr></thead>
+                  <tbody>
+                    <tr><td>{Bread}</td><td class="num">4</td><td><span class="status-tag status-pass">Frequent</span></td></tr>
+                    <tr><td>{Milk}</td><td class="num">4</td><td><span class="status-tag status-pass">Frequent</span></td></tr>
+                    <tr><td>{Diaper}</td><td class="num">4</td><td><span class="status-tag status-pass">Frequent</span></td></tr>
+                    <tr><td>{Beer}</td><td class="num">3</td><td><span class="status-tag status-pass">Frequent</span></td></tr>
+                    <tr><td>{Eggs}</td><td class="num">1</td><td><span class="status-tag status-fail">Eliminated</span></td></tr>
+                    <tr><td>{Cola}</td><td class="num">2</td><td><span class="status-tag status-fail">Eliminated</span></td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="worked-step">
+              <h4 class="step-heading">Step 2: Generate $C_2$ &amp; Prune to $L_2$ ($\text{Count} \ge 3$)</h4>
+              <div class="table-wrap">
+                <table>
+                  <thead><tr><th>2-Itemset ($C_2$)</th><th class="num">Count</th><th class="num">Support</th><th>Result ($L_2$)</th></tr></thead>
+                  <tbody>
+                    <tr><td>{Bread, Milk}</td><td class="num">2</td><td class="num">40%</td><td><span class="status-tag status-fail">Removed</span></td></tr>
+                    <tr><td>{Bread, Diaper}</td><td class="num">3</td><td class="num">60%</td><td><span class="status-tag status-pass">L₂ Frequent</span></td></tr>
+                    <tr><td>{Bread, Beer}</td><td class="num">2</td><td class="num">40%</td><td><span class="status-tag status-fail">Removed</span></td></tr>
+                    <tr><td>{Milk, Diaper}</td><td class="num">3</td><td class="num">60%</td><td><span class="status-tag status-pass">L₂ Frequent</span></td></tr>
+                    <tr><td>{Milk, Beer}</td><td class="num">2</td><td class="num">40%</td><td><span class="status-tag status-fail">Removed</span></td></tr>
+                    <tr><td>{Diaper, Beer}</td><td class="num">3</td><td class="num">60%</td><td><span class="status-tag status-pass">L₂ Frequent</span></td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="worked-step">
+              <h4 class="step-heading">Step 3: Candidate $C_3$ &amp; Apriori Property Pruning</h4>
+              <p>Joining $L_2$ produces candidate <code>{Bread, Milk, Diaper}</code>. By the <span class="kw">Apriori Property</span>, every subset must be frequent. Checking subsets: <code>{Bread, Diaper}</code> (frequent), <code>{Milk, Diaper}</code> (frequent), but <code>{Bread, Milk}</code> is <strong>not frequent</strong> (count = 2 &lt; 3). Therefore <code>{Bread, Milk, Diaper}</code> is eliminated, $L_3 = \emptyset$, and the search terminates.</p>
+            </div>
+
+            <div class="worked-step">
+              <h4 class="step-heading">Step 4: Strong Association Rules ($\text{Min Confidence} = 70\%$) + Lift</h4>
+              <div class="table-wrap">
+                <table>
+                  <thead><tr><th>Rule ($X \to Y$)</th><th class="num">$\text{Count}(X \cup Y) / \text{Count}(X)$</th><th class="num">Confidence</th><th class="num">Lift</th><th>Decision</th></tr></thead>
+                  <tbody>
+                    <tr><td><strong>Bread → Diaper</strong></td><td class="num">3 / 4</td><td class="num"><strong>75%</strong></td><td class="num">0.75 / 0.80 = 0.94</td><td><span class="status-tag status-pass">Accepted</span></td></tr>
+                    <tr><td><strong>Diaper → Bread</strong></td><td class="num">3 / 4</td><td class="num"><strong>75%</strong></td><td class="num">0.75 / 0.80 = 0.94</td><td><span class="status-tag status-pass">Accepted</span></td></tr>
+                    <tr><td><strong>Milk → Diaper</strong></td><td class="num">3 / 4</td><td class="num"><strong>75%</strong></td><td class="num">0.75 / 0.80 = 0.94</td><td><span class="status-tag status-pass">Accepted</span></td></tr>
+                    <tr><td><strong>Diaper → Milk</strong></td><td class="num">3 / 4</td><td class="num"><strong>75%</strong></td><td class="num">0.75 / 0.80 = 0.94</td><td><span class="status-tag status-pass">Accepted</span></td></tr>
+                    <tr><td><strong>Diaper → Beer</strong></td><td class="num">3 / 4</td><td class="num"><strong>75%</strong></td><td class="num">0.75 / 0.60 = 1.25</td><td><span class="status-tag status-pass">Accepted (Lift &gt; 1)</span></td></tr>
+                    <tr><td><strong>Beer → Diaper</strong></td><td class="num">3 / 3</td><td class="num"><strong>100%</strong></td><td class="num">1.00 / 0.80 = 1.25</td><td><span class="status-tag status-pass">Accepted (Lift &gt; 1)</span></td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </article>
+
+          <!-- NUMERICAL LAB 5B & 5C -->
+          <div class="two-col">
+            <article class="answer-card">
+              <div class="answer-header">
+                <h3 class="answer-title">05.3 Solved Example 2: Apriori {A, B, C}</h3>
+                <span class="mark-badge">Source Exam</span>
+              </div>
+              <p><strong>Transactions:</strong> T1:{A,B,C}, T2:{A,B}, T3:{A,C}, T4:{A,B,C}, T5:{B,C}. <strong>Min Support = 60%</strong> (Count = 3), <strong>Min Confidence = 70%</strong>.</p>
+              <ul style="padding-left: 1.2rem; margin: var(--space-sm) 0;">
+                <li><strong>$L_1$:</strong> <code>{A}: 4 (T1,T2,T3,T4)</code>, <code>{B}: 4 (T1,T2,T4,T5)</code>, <code>{C}: 4 (T1,T3,T4,T5)</code> — All 80% frequent.</li>
+                <li><strong>$L_2$:</strong> <code>{A,B}: 3 (T1,T2,T4)</code>, <code>{A,C}: 3 (T1,T3,T4)</code>, <code>{B,C}: 3 (T1,T4,T5)</code> — All 60% frequent.</li>
+                <li><strong>$C_3 \to L_3$:</strong> <code>{A,B,C}</code> appears only in T1 &amp; T4 → Support $= 2/5 = 40\% &lt; 60\% \implies L_3 = \emptyset$.</li>
+                <li><strong>6 Strong Rules:</strong> $A \to B, B \to A, A \to C, C \to A, B \to C, C \to B$ all have Confidence $= 3/4 = \mathbf{75\%} \ge 70\%$ ($\text{Lift} = 0.75/0.80 = 0.94$).</li>
+              </ul>
+            </article>
+
+            <article class="answer-card">
+              <div class="answer-header">
+                <h3 class="answer-title">05.4 Solved Example 3: ECLAT Vertical TID-Sets</h3>
+                <span class="mark-badge">Source Exam</span>
+              </div>
+              <p><strong>Transactions:</strong> T1:{Milk,Bread,Butter}, T2:{Bread,Butter}, T3:{Milk,Bread}, T4:{Milk,Butter}, T5:{Milk,Bread,Butter}. <strong>Min Support = 60%</strong> (Count = 3).</p>
+              <div class="table-wrap">
+                <table>
+                  <thead><tr><th>Itemset</th><th>TID Set Intersection</th><th class="num">Count / Supp</th></tr></thead>
+                  <tbody>
+                    <tr><td>{Milk}</td><td><code>{T1, T3, T4, T5}</code></td><td class="num">4 (80%)</td></tr>
+                    <tr><td>{Bread}</td><td><code>{T1, T2, T3, T5}</code></td><td class="num">4 (80%)</td></tr>
+                    <tr><td>{Butter}</td><td><code>{T1, T2, T4, T5}</code></td><td class="num">4 (80%)</td></tr>
+                    <tr><td>{Milk, Bread}</td><td><code>Milk ∩ Bread = {T1, T3, T5}</code></td><td class="num">3 (60%)</td></tr>
+                    <tr><td>{Milk, Butter}</td><td><code>Milk ∩ Butter = {T1, T4, T5}</code></td><td class="num">3 (60%)</td></tr>
+                    <tr><td>{Bread, Butter}</td><td><code>Bread ∩ Butter = {T1, T2, T5}</code></td><td class="num">3 (60%)</td></tr>
+                    <tr><td>{Milk, Bread, Butter}</td><td><code>{T1,T3,T5} ∩ {T1,T2,T4,T5} = {T1,T5}</code></td><td class="num"><span class="status-tag status-fail">2 (40%)</span></td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <p style="font-size: 0.9rem; margin-bottom: 0;"><strong>Key Rule:</strong> $\text{Support Count} = |\text{TID Set Intersection}|$. Final frequent itemsets: <code>{Milk}, {Bread}, {Butter}, {Milk,Bread}, {Milk,Butter}, {Bread,Butter}</code>.</p>
+            </article>
+          </div>
+
+          <!-- NUMERICAL LAB 5D: FP-GROWTH + INTERACTIVE SIMULATOR -->
+          <article class="answer-card">
+            <div class="answer-header">
+              <h3 class="answer-title">05.5 FP-Growth Solved Walkthrough &amp; Algorithm Comparison</h3>
+              <span class="mark-badge">Tree Mining</span>
+            </div>
+            <p><span class="kw">FP-Growth (Frequent Pattern Growth)</span> eliminates candidate generation ($C_k$) by compressing transactions into a prefix-sharing <span class="kw">FP-Tree</span> in just <strong>two database scans</strong>:</p>
+            <div class="two-col" style="align-items: center;">
+              <div>
+                <ol style="padding-left: 1.2rem; margin: 0;">
+                  <li><strong>Scan 1 (Support Count):</strong> Using Example 1 (Min Count = 3), frequent items sorted descending: <code>Bread:4, Milk:4, Diaper:4, Beer:3</code>. (<em>Eggs, Cola dropped</em>).</li>
+                  <li><strong>Sort Transactions by Frequency:</strong>
+                    <ul style="margin-top: var(--space-xs);">
+                      <li>T1: <code>Bread, Milk</code></li>
+                      <li>T2: <code>Bread, Diaper, Beer</code></li>
+                      <li>T3: <code>Milk, Diaper, Beer</code></li>
+                      <li>T4: <code>Bread, Milk, Diaper, Beer</code></li>
+                      <li>T5: <code>Bread, Milk, Diaper</code></li>
+                    </ul>
+                  </li>
+                  <li><strong>Scan 2 (Insert into FP-Tree) &amp; Mine Conditional Pattern Bases:</strong> Shared prefixes (like <code>Bread → Milk</code> in T1, T4, T5) merge into single nodes with incremented counts, then conditional FP-trees are mined bottom-up from <code>Beer</code> → <code>Diaper</code> → <code>Milk</code>.</li>
+                </ol>
+              </div>
+              <div class="diagram-box" style="margin: 0;">
+                <svg viewBox="0 0 380 235" width="100%" role="img" aria-label="FP-Tree Prefix Sharing Structure for Example 1">
+                  <!-- Edges -->
+                  <line x1="190" y1="36" x2="115" y2="75" stroke="var(--outline)" stroke-width="1.5"/>
+                  <line x1="190" y1="36" x2="290" y2="75" stroke="var(--outline)" stroke-width="1.5"/>
+                  <line x1="115" y1="95" x2="75" y2="135" stroke="var(--outline)" stroke-width="1.5"/>
+                  <line x1="115" y1="95" x2="170" y2="135" stroke="var(--outline)" stroke-width="1.5"/>
+                  <line x1="75" y1="155" x2="75" y2="195" stroke="var(--outline)" stroke-width="1.5"/>
+                  <line x1="75" y1="215" x2="145" y2="215" stroke="var(--outline)" stroke-width="1.5"/>
+                  <line x1="170" y1="155" x2="170" y2="195" stroke="var(--outline)" stroke-width="1.5"/>
+                  <line x1="290" y1="95" x2="290" y2="135" stroke="var(--outline)" stroke-width="1.5"/>
+                  <line x1="290" y1="155" x2="290" y2="195" stroke="var(--outline)" stroke-width="1.5"/>
+
+                  <!-- Root -->
+                  <rect x="160" y="10" width="60" height="28" rx="14" fill="var(--primary)" />
+                  <text x="190" y="28" text-anchor="middle" font-family="Geist Mono, monospace" font-size="11" font-weight="600" fill="var(--on-primary)">null</text>
+
+                  <!-- Level 1 -->
+                  <rect x="70" y="70" width="90" height="28" rx="4" fill="var(--primary-container)" stroke="var(--outline)" stroke-width="1.3"/>
+                  <text x="115" y="88" text-anchor="middle" font-family="Geist Mono, monospace" font-size="11" font-weight="600" fill="var(--on-primary-container)">Bread : 4</text>
+
+                  <rect x="245" y="70" width="90" height="28" rx="4" fill="var(--secondary-soft)" stroke="var(--secondary)" stroke-width="1.3"/>
+                  <text x="290" y="88" text-anchor="middle" font-family="Geist Mono, monospace" font-size="11" font-weight="600" fill="var(--on-surface)">Milk : 1</text>
+
+                  <!-- Level 2 -->
+                  <rect x="35" y="130" width="80" height="28" rx="4" fill="var(--secondary-soft)" stroke="var(--secondary)" stroke-width="1.3"/>
+                  <text x="75" y="148" text-anchor="middle" font-family="Geist Mono, monospace" font-size="11" font-weight="600" fill="var(--on-surface)">Milk : 3</text>
+
+                  <rect x="130" y="130" width="84" height="28" rx="4" fill="var(--surface-container)" stroke="var(--outline)" stroke-width="1.3"/>
+                  <text x="172" y="148" text-anchor="middle" font-family="Geist Mono, monospace" font-size="11" font-weight="600" fill="var(--on-surface)">Diaper : 1</text>
+
+                  <rect x="248" y="130" width="84" height="28" rx="4" fill="var(--surface-container)" stroke="var(--outline)" stroke-width="1.3"/>
+                  <text x="290" y="148" text-anchor="middle" font-family="Geist Mono, monospace" font-size="11" font-weight="600" fill="var(--on-surface)">Diaper : 1</text>
+
+                  <!-- Level 3 -->
+                  <rect x="33" y="190" width="84" height="28" rx="4" fill="var(--surface-container)" stroke="var(--outline)" stroke-width="1.3"/>
+                  <text x="75" y="208" text-anchor="middle" font-family="Geist Mono, monospace" font-size="11" font-weight="600" fill="var(--on-surface)">Diaper : 2</text>
+
+                  <rect x="136" y="190" width="70" height="28" rx="4" fill="var(--tag-bg)" stroke="var(--tertiary)" stroke-width="1.3"/>
+                  <text x="171" y="208" text-anchor="middle" font-family="Geist Mono, monospace" font-size="11" font-weight="600" fill="var(--tertiary)">Beer : 2</text>
+
+                  <rect x="252" y="190" width="76" height="28" rx="4" fill="var(--tag-bg)" stroke="var(--tertiary)" stroke-width="1.3"/>
+                  <text x="290" y="208" text-anchor="middle" font-family="Geist Mono, monospace" font-size="11" font-weight="600" fill="var(--tertiary)">Beer : 1</text>
+                </svg>
+                <div class="diagram-caption">
+                  <span>FP-Tree constructed in 2 scans · Zero candidate generation</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="table-wrap" style="margin-top: var(--space-md);">
+              <table>
+                <thead><tr><th>Feature</th><th>Apriori</th><th>ECLAT</th><th>FP-Growth</th></tr></thead>
+                <tbody>
+                  <tr><td><strong>Data Format</strong></td><td>Horizontal (TID → Items)</td><td>Vertical (Item → TID-Set)</td><td>Compressed Prefix Tree (FP-Tree)</td></tr>
+                  <tr><td><strong>Search Strategy</strong></td><td>Breadth-First Search (BFS)</td><td>Depth-First Search (DFS)</td><td>Divide-and-Conquer Tree Mining</td></tr>
+                  <tr><td><strong>Candidate Generation</strong></td><td>Yes ($C_1 \to C_2 \to C_3 \dots$)</td><td>Yes (via TID intersections)</td><td><strong>No candidate generation</strong></td></tr>
+                  <tr><td><strong>Database Scans</strong></td><td>$k + 1$ scans (expensive I/O)</td><td>1 scan (to build TID-sets)</td><td><strong>2 scans</strong></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </article>
+
+          <!-- Interactive Association Rule Simulator -->
+          <article class="lab-panel" id="lab-arm">
+            <div class="lab-header">
+              <div>
+                <span class="dossier-pill" style="margin-bottom: var(--space-xs);">Numerical Lab 5E</span>
+                <h3 class="lab-title">Interactive Apriori &amp; ECLAT Threshold Simulator</h3>
+              </div>
+              <span class="status-tag status-info">Live Solver</span>
+            </div>
+
+            <div class="control-row">
+              <div class="field-group" style="flex: 2 1 240px;">
+                <label class="field-label" for="arm-dataset">Select Solved Dataset</label>
+                <select class="field-select" id="arm-dataset" onchange="runAssociationLab()">
+                  <option value="ex1">Example 1: Supermarket (Bread, Milk, Diaper, Beer, Eggs, Cola)</option>
+                  <option value="ex2">Example 2: Abstract Items ({A, B, C})</option>
+                  <option value="ex3">Example 3: ECLAT Basket (Milk, Bread, Butter)</option>
+                </select>
+              </div>
+              <div class="field-group">
+                <label class="field-label" for="arm-minsupp">Min Support (%): <span id="arm-supp-val">60</span>%</label>
+                <input id="arm-minsupp" type="range" min="20" max="100" step="20" value="60" oninput="syncArmSupp(this.value)">
+              </div>
+              <div class="field-group">
+                <label class="field-label" for="arm-minconf">Min Confidence (%): <span id="arm-conf-val">70</span>%</label>
+                <input id="arm-minconf" type="range" min="40" max="100" step="5" value="70" oninput="syncArmConf(this.value)">
+              </div>
+            </div>
+
+            <div id="arm-lab-output" class="lab-output"></div>
+
+            <details class="code-details">
+              <summary>Python Demo: Apriori &amp; Association Rules (mlxtend)</summary>
+              <div class="code-block-wrap">
+<pre><code>import pandas as pd
+from mlxtend.preprocessing import TransactionEncoder
+from mlxtend.frequent_patterns import apriori, association_rules
+
+transactions = [
+    ["Bread", "Milk"],
+    ["Bread", "Diaper", "Beer", "Eggs"],
+    ["Milk", "Diaper", "Beer", "Cola"],
+    ["Bread", "Milk", "Diaper", "Beer"],
+    ["Bread", "Milk", "Diaper", "Cola"]
+]
+
+te = TransactionEncoder()
+df = pd.DataFrame(te.fit_transform(transactions), columns=te.columns_)
+
+freq_items = apriori(df, min_support=0.60, use_colnames=True)
+rules = association_rules(freq_items, metric="confidence", min_threshold=0.70)
+print(rules[["antecedents", "consequents", "support", "confidence", "lift"]])</code></pre>
+              </div>
+            </details>
+          </article>
+        </section>
+
+        <!-- ======================================================= -->
+        <!-- UNIT VI -->
+        <!-- ======================================================= -->
+        <section id="unit-6" class="unit-section">
+          <div class="dossier-bar">
+            <div class="dossier-bar-left">
+              <span class="dossier-pill">Unit 06</span>
+              <span class="dossier-meta">7 Hours · Visual Analytics &amp; City Traffic Case Study</span>
+            </div>
+          </div>
+          <h2 class="section-title">Data Visualization &amp; The 12-Chart Taxonomy</h2>
+          <p class="section-deck">Translating multidimensional metrics into pre-attentive visual encodings across all 12 syllabus chart types, demonstrated via a City Traffic Management console.</p>
+
+          <article class="answer-card">
+            <div class="answer-header">
+              <h3 class="answer-title">06.1 Benefits, Tools &amp; Complete 12-Graph Master Reference</h3>
+              <span class="mark-badge">5-Mark Master Answer</span>
+            </div>
+            <div class="framework-grid">
+              <div class="pillar">
+                <span class="pillar-label">1. Definition &amp; Benefits (1 Mark)</span>
+                <p><span class="kw">Data Visualization</span> encodes quantitative and categorical data into graphical marks so human vision detects <span class="kw">trends, outliers, and clusters</span> faster than raw tables. Standard tools include <span class="kw">Tableau, Power BI, Matplotlib, Seaborn, Plotly, and D3.js</span>.</p>
+              </div>
+              <div class="pillar">
+                <span class="pillar-label">2. All 12 Syllabus Chart Types (3 Marks)</span>
+                <div class="table-wrap">
+                  <table>
+                    <thead><tr><th>Chart Type</th><th>Primary Purpose</th><th>Ideal Data &amp; Case Use</th></tr></thead>
+                    <tbody>
+                      <tr><td><strong>1. Bar Graph</strong></td><td>Compare discrete categories</td><td>Traffic volume across 5 city junctions</td></tr>
+                      <tr><td><strong>2. Stacked Bar Chart</strong></td><td>Part-to-whole across categories</td><td>Vehicle mix (Cars, Buses, Bikes) per junction</td></tr>
+                      <tr><td><strong>3. Pie Chart</strong></td><td>Simple part-to-whole shares (&le;5 slices)</td><td>Share of total daily commuters by mode</td></tr>
+                      <tr><td><strong>4. Doughnut Chart</strong></td><td>Part-to-whole with center KPI figure</td><td>Total daily toll revenue + payment channel split</td></tr>
+                      <tr><td><strong>5. Line Chart</strong></td><td>Continuous trends over time</td><td>Hourly congestion index (06:00–22:00)</td></tr>
+                      <tr><td><strong>6. Area Chart</strong></td><td>Cumulative volume magnitude over time</td><td>Total cumulative vehicles crossing a bridge</td></tr>
+                      <tr><td><strong>7. Treemap Chart</strong></td><td>Hierarchical part-to-whole via nested rectangles</td><td>Delay minutes nested by Zone → Arterial Road</td></tr>
+                      <tr><td><strong>8. Heatmap</strong></td><td>2D matrix intensity via color scale</td><td>Congestion hotspots by Day-of-Week × Hour</td></tr>
+                      <tr><td><strong>9. Waterfall Chart</strong></td><td>Sequential positive/negative cumulative deltas</td><td>Net travel-time savings after signal retiming</td></tr>
+                      <tr><td><strong>10. Scatter Plot</strong></td><td>Correlation &amp; outliers between 2 numeric vars</td><td>Traffic Density (veh/km) vs. Average Speed (km/h)</td></tr>
+                      <tr><td><strong>11. Histogram</strong></td><td>Frequency distribution of continuous bins</td><td>Distribution of commuter trip durations (min)</td></tr>
+                      <tr><td><strong>12. Box Plot</strong></td><td>5-number summary (Min, Q1, Med, Q3, Max + Outliers)</td><td>Travel-time variance across rush vs. off-peak hours</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="pillar">
+                <span class="pillar-label">3. City Traffic Management Case Study (1 Mark)</span>
+                <p><strong>Urban Mobility Optimization:</strong> Combining <span class="kw">Heatmaps</span> (pinpointing Friday 18:00 bottlenecks), <span class="kw">Line Charts</span> (peak-hour signal timing), and <span class="kw">Scatter Plots</span> (speed-density thresholds) reduces intersection wait times by re-routing public transit.</p>
+              </div>
+            </div>
+          </article>
+
+          <!-- Interactive Unit 6 Chart Studio -->
+          <article class="lab-panel" id="lab-viz">
+            <div class="lab-header">
+              <div>
+                <span class="dossier-pill" style="margin-bottom: var(--space-xs);">Visual Encoding Lab</span>
+                <h3 class="lab-title">City Traffic Management: Interactive Chart Selector</h3>
+              </div>
+              <div class="btn-row">
+                <button type="button" class="btn btn-secondary is-active" data-viz="line" onclick="switchTrafficChart('line', this)">Line (Hourly Trend)</button>
+                <button type="button" class="btn btn-secondary" data-viz="stacked" onclick="switchTrafficChart('stacked', this)">Stacked Bar (Mode Split)</button>
+                <button type="button" class="btn btn-secondary" data-viz="scatter" onclick="switchTrafficChart('scatter', this)">Scatter (Speed vs. Density)</button>
+                <button type="button" class="btn btn-secondary" data-viz="histogram" onclick="switchTrafficChart('histogram', this)">Histogram (Delay Bins)</button>
+              </div>
+            </div>
+
+            <div class="chart-stage">
+              <canvas id="traffic-canvas" aria-label="City Traffic Management Chart"></canvas>
+            </div>
+            <div id="viz-rationale" class="lab-output">
+              <strong>Why Line Chart?</strong> Ideal for continuous temporal progression across 24 hours, highlighting the morning (09:00) and evening (18:00) rush-hour congestion peaks so traffic engineers can schedule adaptive green-wave signal phases.
+            </div>
+          </article>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <script>
+    /* ======================================================================
+       SHARED DESIGN TOKEN ACCESSOR FOR SVG / CHART.JS
+       ====================================================================== */
+    function getToken(name) {
+      return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+    }
+
+    function toggleKeywordHighlight() {
+      var btn = document.getElementById('toggle-kw-btn');
+      var active = document.body.classList.toggle('highlight-keywords');
+      if (btn) {
+        btn.classList.toggle('is-active', active);
+        btn.textContent = active ? 'Keyword Highlights: On' : 'Keyword Highlights: Off';
+      }
+    }
+
+    /* ======================================================================
+       UNIT 1: INTERACTIVE LIFECYCLE STAGE INSPECTOR
+       ====================================================================== */
+    var lifecycleStages = [
+      `<strong>Stage 01 — Problem Formulation:</strong> Define business objectives, measurable KPIs, and target variables (e.g., predicting credit card default probability) before acquiring data.`,
+      `<strong>Stage 02 — Data Collection:</strong> Gather structured and unstructured records from transactional databases, user surveys, API telemetry, or automated web scraping.`,
+      `<strong>Stage 03 — Cleaning &amp; Preprocessing:</strong> Handle missing values, smooth noisy outliers, normalize scales (Min-Max / Z-Score), and discretize continuous features.`,
+      `<strong>Stage 04 — Exploratory Data Analysis (EDA):</strong> Compute summary statistics (mean, median, variance) and plot distributions to uncover correlations and class imbalances.`,
+      `<strong>Stage 05 — Model Building:</strong> Split data into train/test sets, train supervised or unsupervised algorithms (CART, Random Forest, k-NN, K-Means), and tune hyperparameters.`,
+      `<strong>Stage 06 — Deployment &amp; Monitoring:</strong> Serve the validated model in production, continuously monitor prediction drift, and retrain iteratively as data distributions evolve.`
+    ];
+
+    function selectLifecycleStep(idx) {
+      var nodes = document.querySelectorAll('[data-u1-step]');
+      for (var i = 0; i < nodes.length; i++) {
+        nodes[i].classList.toggle('selected', i === idx);
+      }
+      var detail = document.getElementById('u1-lifecycle-detail');
+      if (detail && lifecycleStages[idx]) {
+        detail.innerHTML = lifecycleStages[idx];
+      }
+    }
+
+    /* ======================================================================
+       UNIT 2: INTERACTIVE 3-TIER DATA WAREHOUSE INSPECTOR
+       ====================================================================== */
+    var dwNodes = [
+      `<strong>Tier 1 — Source Systems:</strong> Heterogeneous operational databases (banking transactions, hospital EHRs, retail POS) feeding raw transactional records into the staging area.`,
+      `<strong>ETL Layer (Extract, Clean, Transform, Load):</strong> Extracts multi-source records, cleans missing/inconsistent fields (e.g., names &amp; addresses), applies schema transformations, and runs efficient parallel loads.`,
+      `<strong>Central Repository &amp; Data Marts:</strong> Stores integrated, time-variant data in Star or Snowflake schemas (central quantitative Fact Table linked to Dimension hierarchies) plus department-focused Data Marts.`,
+      `<strong>Metadata &amp; Warehouse Maintenance:</strong> Tracks data lineage, schema definitions, refresh schedules, and materialized view batch updates for fast aggregate query evaluation.`,
+      `<strong>Tier 2 — OLAP Engine:</strong> Executes multidimensional analytical queries via <strong>ROLAP</strong> (relational backend, high scalability), <strong>MOLAP</strong> (pre-computed array cubes, fast indexing), or <strong>HOLAP</strong> (hybrid).`,
+      `<strong>Tier 3 — End Users &amp; BI Front-End:</strong> Business analysts perform interactive <strong>Roll-up</strong>, <strong>Drill-down</strong>, <strong>Slice</strong>, <strong>Dice</strong>, and <strong>Rotation (Pivot Table)</strong> exploration.`
+    ];
+
+    function selectDWNode(idx) {
+      var nodes = document.querySelectorAll('[data-u2-node]');
+      for (var i = 0; i < nodes.length; i++) {
+        nodes[i].classList.toggle('selected', i === idx);
+      }
+      var detail = document.getElementById('u2-dw-detail');
+      if (detail && dwNodes[idx]) {
+        detail.innerHTML = dwNodes[idx];
+      }
+    }
+
+    /* ======================================================================
+       UNIT 2 LAB: MIN-MAX, Z-SCORE & BINNING CALCULATOR
+       ====================================================================== */
+    function computePreprocessingLab() {
+      var rawInput = document.getElementById('norm-data-input');
+      var minInput = document.getElementById('norm-min-input');
+      var maxInput = document.getElementById('norm-max-input');
+      var binInput = document.getElementById('bin-count-input');
+      var errEl = document.getElementById('norm-error-msg');
+      var outEl = document.getElementById('norm-lab-output');
+      if (!rawInput || !minInput || !maxInput || !binInput || !errEl || !outEl) return;
+
+      var nums = rawInput.value.split(',').map(function(s) {
+        return parseFloat(s.trim());
+      }).filter(function(n) {
+        return !isNaN(n);
+      });
+
+      var newMin = parseFloat(minInput.value);
+      var newMax = parseFloat(maxInput.value);
+      var k = parseInt(binInput.value, 10);
+
+      if (nums.length < 3) {
+        errEl.textContent = 'Enter at least 3 valid numeric values separated by commas.';
+        return;
+      }
+      if (isNaN(newMin) || isNaN(newMax) || newMin >= newMax) {
+        errEl.textContent = 'Ensure new_min is strictly less than new_max.';
+        return;
+      }
+      if (isNaN(k) || k < 2 || k > nums.length) {
+        errEl.textContent = 'Choose a bin count k between 2 and the dataset length.';
+        return;
+      }
+      errEl.textContent = '';
+
+      var sorted = nums.slice().sort(function(a, b) { return a - b; });
+      var minV = sorted[0];
+      var maxV = sorted[sorted.length - 1];
+      var range = maxV - minV;
+
+      var sum = sorted.reduce(function(acc, v) { return acc + v; }, 0);
+      var mean = sum / sorted.length;
+      var variance = sorted.reduce(function(acc, v) { return acc + Math.pow(v - mean, 2); }, 0) / sorted.length;
+      var std = Math.sqrt(variance);
+
+      var rowsHtml = sorted.map(function(v) {
+        var mm = range === 0 ? newMin : ((v - minV) / range) * (newMax - newMin) + newMin;
+        var zs = std === 0 ? 0 : (v - mean) / std;
+        return `<tr>
+          <td class="num">${v}</td>
+          <td class="num">${mm.toFixed(4)}</td>
+          <td class="num">${zs.toFixed(4)}</td>
+        </tr>`;
+      }).join('');
+
+      // Equal-Frequency Binning
+      var binSize = Math.ceil(sorted.length / k);
+      var binsHtml = '';
+      for (var b = 0; b < k; b++) {
+        var slice = sorted.slice(b * binSize, (b + 1) * binSize);
+        if (slice.length === 0) continue;
+        var bMean = slice.reduce(function(a, c) { return a + c; }, 0) / slice.length;
+        var bMin = slice[0];
+        var bMax = slice[slice.length - 1];
+        var smoothMeans = slice.map(function() { return bMean.toFixed(2); });
+        var smoothBounds = slice.map(function(val) {
+          return Math.abs(val - bMin) <= Math.abs(bMax - val) ? bMin : bMax;
+        });
+        binsHtml += `<tr>
+          <td><strong>Bin ${b + 1}</strong></td>
+          <td><code>[${slice.join(', ')}]</code></td>
+          <td class="num">${bMean.toFixed(2)}</td>
+          <td><code>[${smoothMeans.join(', ')}]</code></td>
+          <td><code>[${smoothBounds.join(', ')}]</code></td>
+        </tr>`;
+      }
+
+      outEl.innerHTML = `
+        <div style="display: flex; flex-wrap: wrap; gap: var(--space-md); margin-bottom: var(--space-sm); font-family: var(--font-label); font-size: var(--label-size);">
+          <span><strong>min:</strong> ${minV}</span>
+          <span><strong>max:</strong> ${maxV}</span>
+          <span><strong>mean (&mu;):</strong> ${mean.toFixed(3)}</span>
+          <span><strong>std (&sigma;):</strong> ${std.toFixed(3)}</span>
+        </div>
+        <div class="two-col">
+          <div class="table-wrap" style="margin: 0;">
+            <table>
+              <thead><tr><th class="num">Value (v)</th><th class="num">Min-Max [${newMin}, ${newMax}]</th><th class="num">Z-Score</th></tr></thead>
+              <tbody>${rowsHtml}</tbody>
+            </table>
+          </div>
+          <div class="table-wrap" style="margin: 0;">
+            <table>
+              <thead><tr><th>Bin</th><th>Raw</th><th class="num">Mean</th><th>By Means</th><th>By Boundaries</th></tr></thead>
+              <tbody>${binsHtml}</tbody>
+            </table>
+          </div>
+        </div>
+      `;
+    }
+
+    /* ======================================================================
+       UNIT 3 LAB A: DECISION TREE ENTROPY, IG & GINI
+       ====================================================================== */
+    var creditData = [
+      { id: 1, CreditHistory: 'Bad', Income: 'Low', Debt: 'High', Default: 'Yes' },
+      { id: 2, CreditHistory: 'Bad', Income: 'Medium', Debt: 'High', Default: 'Yes' },
+      { id: 3, CreditHistory: 'Unknown', Income: 'Low', Debt: 'High', Default: 'Yes' },
+      { id: 4, CreditHistory: 'Good', Income: 'Low', Debt: 'Low', Default: 'No' },
+      { id: 5, CreditHistory: 'Good', Income: 'High', Debt: 'Low', Default: 'No' },
+      { id: 6, CreditHistory: 'Unknown', Income: 'High', Debt: 'Low', Default: 'No' },
+      { id: 7, CreditHistory: 'Bad', Income: 'High', Debt: 'Low', Default: 'No' },
+      { id: 8, CreditHistory: 'Unknown', Income: 'Medium', Debt: 'High', Default: 'Yes' }
+    ];
+
+    function calcEntropy(yes, no) {
+      var tot = yes + no;
+      if (tot === 0 || yes === 0 || no === 0) return 0;
+      var py = yes / tot;
+      var pn = no / tot;
+      return -(py * Math.log2(py)) - (pn * Math.log2(pn));
+    }
+
+    function calcGini(yes, no) {
+      var tot = yes + no;
+      if (tot === 0) return 0;
+      var py = yes / tot;
+      var pn = no / tot;
+      return 1 - (py * py + pn * pn);
+    }
+
+    function setDTAttr(attr) {
+      var sel = document.getElementById('dt-attr-select');
+      if (sel) {
+        sel.value = attr;
+        renderDecisionTreeLab();
+      }
+    }
+
+    function renderDecisionTreeLab() {
+      var sel = document.getElementById('dt-attr-select');
+      var out = document.getElementById('dt-lab-output');
+      if (!sel || !out) return;
+
+      var attr = sel.value;
+      var groups = {};
+      for (var i = 0; i < creditData.length; i++) {
+        var val = creditData[i][attr];
+        if (!groups[val]) groups[val] = { yes: 0, no: 0 };
+        if (creditData[i].Default === 'Yes') groups[val].yes++;
+        else groups[val].no++;
+      }
+
+      var total = creditData.length;
+      var parentEntropy = 1.0;
+      var weightedEntropy = 0;
+      var weightedGini = 0;
+      var rows = '';
+      var keys = Object.keys(groups);
+
+      for (var k = 0; k < keys.length; k++) {
+        var key = keys[k];
+        var g = groups[key];
+        var subTot = g.yes + g.no;
+        var ent = calcEntropy(g.yes, g.no);
+        var gini = calcGini(g.yes, g.no);
+        weightedEntropy += (subTot / total) * ent;
+        weightedGini += (subTot / total) * gini;
+        var leafLabel = ent === 0 ? `<span class="status-tag status-pass">Pure Leaf (${g.yes > 0 ? 'Yes' : 'No'})</span>` : `<span class="status-tag status-warn">Impure (Needs Sub-Split)</span>`;
+        rows += `<tr>
+          <td><strong>${attr} = ${key}</strong></td>
+          <td class="num">${g.yes}</td>
+          <td class="num">${g.no}</td>
+          <td class="num">${ent.toFixed(4)}</td>
+          <td class="num">${gini.toFixed(4)}</td>
+          <td>${leafLabel}</td>
+        </tr>`;
+      }
+
+      var ig = parentEntropy - weightedEntropy;
+      var verdict = ig >= 0.99
+        ? `<span class="status-tag status-pass">Optimal Root (IG = 1.0000)</span>`
+        : `<span class="status-tag status-info">Sub-optimal (IG = ${ig.toFixed(4)})</span>`;
+
+      // Dynamic SVG Tree
+      var svgWidth = 520;
+      var stepX = svgWidth / keys.length;
+      var svgEdges = '';
+      var svgLeaves = '';
+      for (var j = 0; j < keys.length; j++) {
+        var branch = keys[j];
+        var bg = groups[branch];
+        var cx = stepX * j + stepX / 2;
+        var isPure = (bg.yes === 0 || bg.no === 0);
+        var leafFill = isPure ? (bg.yes > 0 ? 'var(--error-bg)' : 'var(--positive-bg)') : 'var(--warning-bg)';
+        var leafStroke = isPure ? (bg.yes > 0 ? 'var(--error)' : 'var(--positive)') : 'var(--warning)';
+        var leafText = isPure ? ('Default: ' + (bg.yes > 0 ? 'YES' : 'NO')) : ('Mixed (' + bg.yes + 'Y / ' + bg.no + 'N)');
+        svgEdges += `<line x1="260" y1="48" x2="${cx}" y2="115" stroke="var(--outline)" stroke-width="1.5"/>
+                     <text x="${(260 + cx) / 2}" y="82" text-anchor="middle" font-family="Geist Mono, monospace" font-size="11" font-weight="600" fill="var(--secondary)">${branch}</text>`;
+        svgLeaves += `<rect x="${cx - 72}" y="115" width="144" height="36" rx="6" fill="${leafFill}" stroke="${leafStroke}" stroke-width="1.5"/>
+                      <text x="${cx}" y="137" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="12" font-weight="700" fill="var(--on-surface)">${leafText}</text>`;
+      }
+
+      out.innerHTML = `
+        <div style="display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:var(--space-sm); margin-bottom:var(--space-sm);">
+          <div>
+            <strong>Weighted Entropy:</strong> <code>${weightedEntropy.toFixed(4)}</code> &nbsp;|&nbsp;
+            <strong>Information Gain:</strong> <code>${ig.toFixed(4)}</code> &nbsp;|&nbsp;
+            <strong>Weighted Gini:</strong> <code>${weightedGini.toFixed(4)}</code>
+          </div>
+          ${verdict}
+        </div>
+        <div class="table-wrap" style="margin: var(--space-sm) 0;">
+          <table>
+            <thead><tr><th>Branch</th><th class="num">Yes</th><th class="num">No</th><th class="num">Entropy</th><th class="num">Gini</th><th>Node Purity</th></tr></thead>
+            <tbody>${rows}</tbody>
+          </table>
+        </div>
+        <div class="diagram-box" style="margin: var(--space-sm) 0 0;">
+          <svg viewBox="0 0 520 165" width="100%" role="img" aria-label="Decision Tree Split Diagram">
+            ${svgEdges}
+            <rect x="190" y="12" width="140" height="36" rx="6" fill="var(--primary-container)" stroke="var(--outline)" stroke-width="1.5"/>
+            <text x="260" y="34" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="12.5" font-weight="700" fill="var(--on-primary-container)">Root: ${attr}</text>
+            ${svgLeaves}
+          </svg>
+        </div>
+      `;
+    }
+
+    /* ======================================================================
+       UNIT 3 LAB B: NAIVE BAYES LIVE POSTERIOR CALCULATOR
+       ====================================================================== */
+    function computeNaiveBayes() {
+      var hEl = document.getElementById('nb-history');
+      var iEl = document.getElementById('nb-income');
+      var dEl = document.getElementById('nb-debt');
+      var out = document.getElementById('nb-lab-output');
+      if (!hEl || !iEl || !dEl || !out) return;
+
+      var q = { CreditHistory: hEl.value, Income: iEl.value, Debt: dEl.value };
+      var yesRows = creditData.filter(function(r) { return r.Default === 'Yes'; });
+      var noRows = creditData.filter(function(r) { return r.Default === 'No'; });
+
+      function condProb(rows, field, val, distinctCount) {
+        var count = rows.filter(function(r) { return r[field] === val; }).length;
+        // Laplace +1 smoothing so zero counts don't collapse entire product
+        return {
+          rawCount: count,
+          total: rows.length,
+          prob: (count + 1) / (rows.length + distinctCount)
+        };
+      }
+
+      var pYes = yesRows.length / creditData.length;
+      var pNo = noRows.length / creditData.length;
+
+      var yH = condProb(yesRows, 'CreditHistory', q.CreditHistory, 3);
+      var yI = condProb(yesRows, 'Income', q.Income, 3);
+      var yD = condProb(yesRows, 'Debt', q.Debt, 2);
+
+      var nH = condProb(noRows, 'CreditHistory', q.CreditHistory, 3);
+      var nI = condProb(noRows, 'Income', q.Income, 3);
+      var nD = condProb(noRows, 'Debt', q.Debt, 2);
+
+      var scoreYes = pYes * yH.prob * yI.prob * yD.prob;
+      var scoreNo = pNo * nH.prob * nI.prob * nD.prob;
+      var normSum = scoreYes + scoreNo;
+      var postYes = (scoreYes / normSum) * 100;
+      var postNo = (scoreNo / normSum) * 100;
+
+      var pred = postYes >= postNo ? 'Default = YES' : 'Default = NO';
+      var predClass = postYes >= postNo ? 'status-fail' : 'status-pass';
+
+      out.innerHTML = `
+        <div style="display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:var(--space-sm); margin-bottom:var(--space-sm);">
+          <strong>Test Sample X = (${q.CreditHistory}, ${q.Income}, ${q.Debt})</strong>
+          <span class="status-tag ${predClass}">Prediction: ${pred} (${Math.max(postYes, postNo).toFixed(1)}%)</span>
+        </div>
+        <div class="table-wrap" style="margin:0;">
+          <table>
+            <thead><tr><th>Class</th><th class="num">Prior P(C)</th><th class="num">P(History|C)</th><th class="num">P(Income|C)</th><th class="num">P(Debt|C)</th><th class="num">Normalized Posterior</th></tr></thead>
+            <tbody>
+              <tr>
+                <td><strong>Yes (Default)</strong></td>
+                <td class="num">4/8 = 0.500</td>
+                <td class="num">(${yH.rawCount}+1)/(4+3) = ${yH.prob.toFixed(3)}</td>
+                <td class="num">(${yI.rawCount}+1)/(4+3) = ${yI.prob.toFixed(3)}</td>
+                <td class="num">(${yD.rawCount}+1)/(4+2) = ${yD.prob.toFixed(3)}</td>
+                <td class="num"><strong>${postYes.toFixed(2)}%</strong></td>
+              </tr>
+              <tr>
+                <td><strong>No (Safe)</strong></td>
+                <td class="num">4/8 = 0.500</td>
+                <td class="num">(${nH.rawCount}+1)/(4+3) = ${nH.prob.toFixed(3)}</td>
+                <td class="num">(${nI.rawCount}+1)/(4+3) = ${nI.prob.toFixed(3)}</td>
+                <td class="num">(${nD.rawCount}+1)/(4+2) = ${nD.prob.toFixed(3)}</td>
+                <td class="num"><strong>${postNo.toFixed(2)}%</strong></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p style="font-size:0.85rem; color:var(--on-surface-variant); margin:var(--space-xs) 0 0;">Note: Laplace (+1) smoothing prevents zero conditional probabilities (e.g., 0/4) from annihilating the product.</p>
+      `;
+    }
+
+    /* ======================================================================
+       UNIT 4 LAB: INTERACTIVE K-MEANS STEPPER
+       ====================================================================== */
+    var kmPoints = [
+      { id: 'P1', x: 18, y: 22, c: -1 },
+      { id: 'P2', x: 24, y: 35, c: -1 },
+      { id: 'P3', x: 28, y: 18, c: -1 },
+      { id: 'P4', x: 35, y: 40, c: -1 },
+      { id: 'P5', x: 68, y: 74, c: -1 },
+      { id: 'P6', x: 75, y: 82, c: -1 },
+      { id: 'P7', x: 84, y: 68, c: -1 },
+      { id: 'P8', x: 88, y: 88, c: -1 }
+    ];
+    var kmCentroids = [{ x: 30, y: 70 }, { x: 65, y: 25 }];
+    var kmPhase = 'assign';
+    var kmIter = 0;
+
+    function resetKMeans() {
+      kmCentroids = [{ x: 30, y: 70 }, { x: 65, y: 25 }];
+      for (var i = 0; i < kmPoints.length; i++) kmPoints[i].c = -1;
+      kmPhase = 'assign';
+      kmIter = 0;
+      var btn = document.getElementById('km-step-btn');
+      if (btn) {
+        btn.disabled = false;
+        btn.textContent = 'Next Step: Assign Points';
+      }
+      var status = document.getElementById('km-status-box');
+      if (status) {
+        status.innerHTML = 'Reset to initial centroids <strong>C1(30, 70)</strong> and <strong>C2(65, 25)</strong>. Click <strong>Next Step</strong> to compute Euclidean distances.';
+      }
+      drawKMeansSVG();
+    }
+
+    function stepKMeans() {
+      var btn = document.getElementById('km-step-btn');
+      var status = document.getElementById('km-status-box');
+      if (!btn || !status) return;
+
+      if (kmPhase === 'assign') {
+        kmIter++;
+        var changed = false;
+        for (var i = 0; i < kmPoints.length; i++) {
+          var p = kmPoints[i];
+          var d0 = Math.hypot(p.x - kmCentroids[0].x, p.y - kmCentroids[0].y);
+          var d1 = Math.hypot(p.x - kmCentroids[1].x, p.y - kmCentroids[1].y);
+          var best = d0 <= d1 ? 0 : 1;
+          if (p.c !== best) changed = true;
+          p.c = best;
+        }
+        kmPhase = 'update';
+        btn.textContent = 'Next Step: Recompute Centroids';
+        status.innerHTML = `<strong>Iteration ${kmIter} — Assignment:</strong> Each customer point is assigned to its nearest centroid via $d = \\sqrt{(x_1-x_2)^2 + (y_1-y_2)^2}$.`;
+        if (!changed && kmIter > 1) {
+          btn.disabled = true;
+          btn.textContent = 'Converged';
+          status.innerHTML = `<strong>Converged at Iteration ${kmIter}!</strong> Cluster assignments no longer change. C1 = (${kmCentroids[0].x.toFixed(1)}, ${kmCentroids[0].y.toFixed(1)}), C2 = (${kmCentroids[1].x.toFixed(1)}, ${kmCentroids[1].y.toFixed(1)}).`;
+        }
+      } else {
+        for (var k = 0; k < 2; k++) {
+          var clusterPts = kmPoints.filter(function(pt) { return pt.c === k; });
+          if (clusterPts.length > 0) {
+            kmCentroids[k].x = clusterPts.reduce(function(a, b) { return a + b.x; }, 0) / clusterPts.length;
+            kmCentroids[k].y = clusterPts.reduce(function(a, b) { return a + b.y; }, 0) / clusterPts.length;
+          }
+        }
+        kmPhase = 'assign';
+        btn.textContent = 'Next Step: Assign Points';
+        status.innerHTML = `<strong>Iteration ${kmIter} — Centroids Updated:</strong> New means calculated: <code>C1(${kmCentroids[0].x.toFixed(1)}, ${kmCentroids[0].y.toFixed(1)})</code> and <code>C2(${kmCentroids[1].x.toFixed(1)}, ${kmCentroids[1].y.toFixed(1)})</code>. Click Next Step to verify convergence.`;
+      }
+      drawKMeansSVG();
+      if (typeof renderMathInElement === 'function') {
+        renderMathInElement(status, { delimiters: [{ left: '$', right: '$', display: false }] });
+      }
+    }
+
+    function drawKMeansSVG() {
+      var svg = document.getElementById('kmeans-svg');
+      var lbl = document.getElementById('km-iter-label');
+      if (!svg) return;
+      if (lbl) lbl.textContent = `Iteration ${kmIter} · ${kmPhase === 'assign' ? 'Ready to Assign' : 'Centroids Pending Update'}`;
+
+      function sx(val) { return 35 + (val / 100) * 320; }
+      function sy(val) { return 230 - (val / 100) * 200; }
+
+      var html = `
+        <line x1="35" y1="230" x2="355" y2="230" stroke="var(--outline)" stroke-width="1.5"/>
+        <line x1="35" y1="30" x2="35" y2="230" stroke="var(--outline)" stroke-width="1.5"/>
+      `;
+
+      for (var i = 0; i < kmPoints.length; i++) {
+        var p = kmPoints[i];
+        var px = sx(p.x);
+        var py = sy(p.y);
+        var fill = p.c === -1 ? 'var(--data-context)' : (p.c === 0 ? 'var(--data-1)' : 'var(--data-2)');
+        if (p.c !== -1) {
+          var cx = sx(kmCentroids[p.c].x);
+          var cy = sy(kmCentroids[p.c].y);
+          html += `<line x1="${px}" y1="${py}" x2="${cx}" y2="${cy}" stroke="${fill}" stroke-width="1" stroke-dasharray="3 3" opacity="0.65"/>`;
+        }
+        html += `<circle cx="${px}" cy="${py}" r="6.5" fill="${fill}" stroke="var(--on-surface)" stroke-width="1.2"/>`;
+        html += `<text x="${px + 9}" y="${py + 4}" font-family="Geist Mono, monospace" font-size="10" fill="var(--on-surface)">${p.id}</text>`;
+      }
+
+      for (var c = 0; c < 2; c++) {
+        var cxPos = sx(kmCentroids[c].x);
+        var cyPos = sy(kmCentroids[c].y);
+        var cFill = c === 0 ? 'var(--data-1)' : 'var(--data-2)';
+        html += `<rect x="${cxPos - 7}" y="${cyPos - 7}" width="14" height="14" fill="${cFill}" stroke="var(--on-surface)" stroke-width="2" transform="rotate(45 ${cxPos} ${cyPos})"/>`;
+        html += `<text x="${cxPos}" y="${cyPos - 12}" text-anchor="middle" font-family="Geist Mono, monospace" font-size="10.5" font-weight="700" fill="var(--on-surface)">C${c + 1}</text>`;
+      }
+
+      svg.innerHTML = html;
+    }
+
+    /* ======================================================================
+       UNIT 5 LAB: ASSOCIATION RULE SIMULATOR (APRIORI & ECLAT)
+       ====================================================================== */
+    var armDatasets = {
+      ex1: [
+        ['Bread', 'Milk'],
+        ['Bread', 'Diaper', 'Beer', 'Eggs'],
+        ['Milk', 'Diaper', 'Beer', 'Cola'],
+        ['Bread', 'Milk', 'Diaper', 'Beer'],
+        ['Bread', 'Milk', 'Diaper', 'Cola']
+      ],
+      ex2: [
+        ['A', 'B', 'C'],
+        ['A', 'B'],
+        ['A', 'C'],
+        ['A', 'B', 'C'],
+        ['B', 'C']
+      ],
+      ex3: [
+        ['Milk', 'Bread', 'Butter'],
+        ['Bread', 'Butter'],
+        ['Milk', 'Bread'],
+        ['Milk', 'Butter'],
+        ['Milk', 'Bread', 'Butter']
+      ]
+    };
+
+    function syncArmSupp(val) {
+      var lbl = document.getElementById('arm-supp-val');
+      if (lbl) lbl.textContent = val;
+      runAssociationLab();
+    }
+    function syncArmConf(val) {
+      var lbl = document.getElementById('arm-conf-val');
+      if (lbl) lbl.textContent = val;
+      runAssociationLab();
+    }
+
+    function runAssociationLab() {
+      var dsEl = document.getElementById('arm-dataset');
+      var sEl = document.getElementById('arm-minsupp');
+      var cEl = document.getElementById('arm-minconf');
+      var out = document.getElementById('arm-lab-output');
+      if (!dsEl || !sEl || !cEl || !out) return;
+
+      var txns = armDatasets[dsEl.value] || armDatasets.ex1;
+      var minSuppPct = parseInt(sEl.value, 10);
+      var minConfPct = parseInt(cEl.value, 10);
+      var n = txns.length;
+      var minCount = Math.ceil((minSuppPct / 100) * n);
+
+      // Build vertical TID map
+      var tidMap = {};
+      for (var t = 0; t < n; t++) {
+        for (var i = 0; i < txns[t].length; i++) {
+          var item = txns[t][i];
+          if (!tidMap[item]) tidMap[item] = [];
+          tidMap[item].push('T' + (t + 1));
+        }
+      }
+
+      var allItems = Object.keys(tidMap);
+      var L1 = [];
+      var c1Rows = '';
+      for (var a = 0; a < allItems.length; a++) {
+        var it = allItems[a];
+        var cnt = tidMap[it].length;
+        var freq = cnt >= minCount;
+        if (freq) L1.push({ items: [it], tids: tidMap[it], count: cnt });
+        c1Rows += `<tr>
+          <td><code>{${it}}</code></td>
+          <td><code>{${tidMap[it].join(', ')}}</code></td>
+          <td class="num">${cnt} (${((cnt / n) * 100).toFixed(0)}%)</td>
+          <td>${freq ? '<span class="status-tag status-pass">Frequent</span>' : '<span class="status-tag status-fail">Pruned</span>'}</td>
+        </tr>`;
+      }
+
+      // L2 pairs
+      var L2 = [];
+      var c2Rows = '';
+      for (var x = 0; x < L1.length; x++) {
+        for (var y = x + 1; y < L1.length; y++) {
+          var inter = L1[x].tids.filter(function(tid) { return L1[y].tids.indexOf(tid) !== -1; });
+          var pairCount = inter.length;
+          var pairFreq = pairCount >= minCount;
+          var pairItems = [L1[x].items[0], L1[y].items[0]];
+          if (pairFreq) L2.push({ items: pairItems, tids: inter, count: pairCount });
+          c2Rows += `<tr>
+            <td><code>{${pairItems.join(', ')}}</code></td>
+            <td><code>{${inter.join(', ') || '∅'}}</code></td>
+            <td class="num">${pairCount} (${((pairCount / n) * 100).toFixed(0)}%)</td>
+            <td>${pairFreq ? '<span class="status-tag status-pass">Frequent</span>' : '<span class="status-tag status-fail">Pruned</span>'}</td>
+          </tr>`;
+        }
+      }
+
+      // Strong rules from L2
+      var ruleRows = '';
+      var strongCount = 0;
+      for (var r = 0; r < L2.length; r++) {
+        var p = L2[r];
+        var dirs = [[p.items[0], p.items[1]], [p.items[1], p.items[0]]];
+        for (var d = 0; d < 2; d++) {
+          var ant = dirs[d][0];
+          var con = dirs[d][1];
+          var antCount = tidMap[ant].length;
+          var conSupp = tidMap[con].length / n;
+          var conf = (p.count / antCount) * 100;
+          var lift = (conf / 100) / conSupp;
+          var pass = conf >= minConfPct;
+          if (pass) strongCount++;
+          ruleRows += `<tr>
+            <td><strong>${ant} &rarr; ${con}</strong></td>
+            <td class="num">${p.count} / ${antCount}</td>
+            <td class="num">${conf.toFixed(1)}%</td>
+            <td class="num">${lift.toFixed(2)}</td>
+            <td>${pass ? '<span class="status-tag status-pass">Strong</span>' : '<span class="status-tag status-fail">Rejected</span>'}</td>
+          </tr>`;
+        }
+      }
+
+      out.innerHTML = `
+        <div style="display:flex; flex-wrap:wrap; gap:var(--space-md); font-family:var(--font-label); font-size:var(--label-size); margin-bottom:var(--space-sm);">
+          <span><strong>N:</strong> ${n}</span>
+          <span><strong>Min Support Count:</strong> ${minCount}</span>
+          <span><strong>L₁ Frequent:</strong> ${L1.length}</span>
+          <span><strong>L₂ Frequent:</strong> ${L2.length}</span>
+          <span><strong>Strong Rules:</strong> ${strongCount}</span>
+        </div>
+        <div class="two-col">
+          <div class="table-wrap" style="margin:0;">
+            <table>
+              <thead><tr><th>C₁ Item</th><th>TID-Set</th><th class="num">Supp</th><th>Status</th></tr></thead>
+              <tbody>${c1Rows}</tbody>
+            </table>
+          </div>
+          <div class="table-wrap" style="margin:0;">
+            <table>
+              <thead><tr><th>C₂ Pair</th><th>TID Intersection</th><th class="num">Supp</th><th>Status</th></tr></thead>
+              <tbody>${c2Rows || '<tr><td colspan="4">No 2-itemset candidates generated.</td></tr>'}</tbody>
+            </table>
+          </div>
+        </div>
+        <div class="table-wrap" style="margin: var(--space-md) 0 0;">
+          <table>
+            <thead><tr><th>Generated Rule (from L₂)</th><th class="num">Count(X&cup;Y)/Count(X)</th><th class="num">Confidence</th><th class="num">Lift</th><th>Decision (&ge;${minConfPct}%)</th></tr></thead>
+            <tbody>${ruleRows || '<tr><td colspan="5">No frequent pairs in L₂ to generate rules. Lower Min Support.</td></tr>'}</tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    /* ======================================================================
+       UNIT 6: CITY TRAFFIC VISUALIZATION STUDIO (CHART.JS)
+       ====================================================================== */
+    var trafficChart = null;
+    var vizRationales = {
+      line: `<strong>Why Line Chart?</strong> Ideal for continuous temporal progression across 24 hours, highlighting the morning (09:00) and evening (18:00) rush-hour congestion peaks so traffic engineers can schedule adaptive green-wave signal phases.`,
+      stacked: `<strong>Why Stacked Bar Chart?</strong> Compares total vehicle throughput across 5 major junctions while simultaneously breaking down part-to-whole composition (Private Cars, Buses, Two-Wheelers).`,
+      scatter: `<strong>Why Scatter Plot?</strong> Reveals the inverse correlation between Traffic Density (vehicles/km) and Average Speed (km/h), pinpointing critical bottleneck regimes where flow collapses.`,
+      histogram: `<strong>Why Histogram?</strong> Shows the frequency distribution of commuter intersection wait times across continuous time bins, exposing right-skewed tail delays.`
+    };
+
+    function switchTrafficChart(mode, btnEl) {
+      var btns = document.querySelectorAll('[data-viz]');
+      for (var i = 0; i < btns.length; i++) {
+        btns[i].classList.toggle('is-active', btns[i] === btnEl);
+      }
+      var rat = document.getElementById('viz-rationale');
+      if (rat && vizRationales[mode]) rat.innerHTML = vizRationales[mode];
+
+      var canvas = document.getElementById('traffic-canvas');
+      if (!canvas || typeof Chart === 'undefined') return;
+
+      if (trafficChart) {
+        trafficChart.destroy();
+      }
+
+      var c1 = getToken('--data-1');
+      var c2 = getToken('--data-2');
+      var c3 = getToken('--data-3');
+      var gridColor = getToken('--outline-variant');
+      var textColor = getToken('--on-surface');
+
+      var config = null;
+      if (mode === 'line') {
+        config = {
+          type: 'line',
+          data: {
+            labels: ['06:00', '09:00', '12:00', '15:00', '18:00', '21:00'],
+            datasets: [{
+              label: 'Hourly Congestion Index (%)',
+              data: [28, 86, 54, 61, 94, 40],
+              borderColor: c1,
+              backgroundColor: c1,
+              borderWidth: 3,
+              tension: 0.25,
+              pointRadius: 5
+            }]
+          },
+          options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, max: 100, grid: { color: gridColor } }, x: { grid: { display: false } } } }
+        };
+      } else if (mode === 'stacked') {
+        config = {
+          type: 'bar',
+          data: {
+            labels: ['Central Sq', 'Ring Rd E', 'Tech Park', 'Station Rd', 'River Bridge'],
+            datasets: [
+              { label: 'Private Cars', data: [420, 510, 610, 340, 480], backgroundColor: c1 },
+              { label: 'Two-Wheelers', data: [290, 310, 380, 260, 220], backgroundColor: c2 },
+              { label: 'Public Buses', data: [85, 60, 110, 140, 75], backgroundColor: c3 }
+            ]
+          },
+          options: { responsive: true, maintainAspectRatio: false, scales: { x: { stacked: true, grid: { display: false } }, y: { stacked: true, grid: { color: gridColor } } } }
+        };
+      } else if (mode === 'scatter') {
+        config = {
+          type: 'scatter',
+          data: {
+            datasets: [{
+              label: 'Road Segments (Density vs. Speed)',
+              data: [
+                { x: 15, y: 58 }, { x: 25, y: 52 }, { x: 38, y: 44 }, { x: 52, y: 34 },
+                { x: 68, y: 24 }, { x: 82, y: 16 }, { x: 95, y: 11 }, { x: 110, y: 8 }
+              ],
+              backgroundColor: c2,
+              pointRadius: 7
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              x: { title: { display: true, text: 'Traffic Density (veh/km)', color: textColor }, grid: { color: gridColor } },
+              y: { title: { display: true, text: 'Average Speed (km/h)', color: textColor }, beginAtZero: true, grid: { color: gridColor } }
+            }
+          }
+        };
+      } else {
+        config = {
+          type: 'bar',
+          data: {
+            labels: ['0–2 min', '2–4 min', '4–6 min', '6–8 min', '8–10 min'],
+            datasets: [{
+              label: 'Signal Wait Time Frequency (Commuters)',
+              data: [120, 340, 280, 110, 45],
+              backgroundColor: c3,
+              barPercentage: 0.98,
+              categoryPercentage: 0.98
+            }]
+          },
+          options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, grid: { color: gridColor } }, x: { grid: { display: false } } } }
+        };
+      }
+
+      trafficChart = new Chart(canvas.getContext('2d'), config);
+    }
+
+    /* ======================================================================
+       INITIALIZATION ON DOM READY
+       ====================================================================== */
+    document.addEventListener('DOMContentLoaded', function() {
+      computePreprocessingLab();
+      renderDecisionTreeLab();
+      computeNaiveBayes();
+      drawKMeansSVG();
+      runAssociationLab();
+      var defaultVizBtn = document.querySelector('[data-viz="line"]');
+      switchTrafficChart('line', defaultVizBtn);
+
+      if (typeof renderMathInElement === 'function') {
+        renderMathInElement(document.body, {
+          delimiters: [
+            { left: '$$', right: '$$', display: true },
+            { left: '$', right: '$', display: false }
+          ],
+          throwOnError: false
+        });
+      }
+
+      if (typeof lucide !== 'undefined' && typeof lucide.createIcons === 'function') {
+        lucide.createIcons();
+      }
+    });
+  </script>
+</body>
+</html>
